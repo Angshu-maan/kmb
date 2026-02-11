@@ -1,7 +1,7 @@
-class ApplicationResponse<T> {
+class ApplicationResponse {
   final String status;
   final String message;
-  final T data;
+  final List<dynamic> data;
 
   ApplicationResponse({
     required this.status,
@@ -9,14 +9,11 @@ class ApplicationResponse<T> {
     required this.data,
   });
 
-  factory ApplicationResponse.fromJson(
-    Map<String, dynamic> json,
-    T Function(dynamic json) fromJsonT,
-  ) {
+  factory ApplicationResponse.fromJson(Map<String, dynamic> json) {
     return ApplicationResponse(
-      status: json['status'] as String,
-      message: json['message'] as String,
-      data: fromJsonT(json['data']),
+      status: json['status'] ?? '',
+      message: json['message'] ?? '',
+      data: json['data'] is List ? json['data'] : [],
     );
   }
 }

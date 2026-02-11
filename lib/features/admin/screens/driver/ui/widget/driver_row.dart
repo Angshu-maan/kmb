@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:kmb_app/features/admin/widgets/status_codes.dart';
+import 'package:kmb_app/features/admin/widgets/status_mapper.dart';
 import '../../model/driver_model.dart';
 import '../../../../widgets/status_badge.dart';
 
@@ -10,19 +12,39 @@ class DriverRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final statusUi = mapStatus(
+      status: driver.active,
+      type: StatusType.activeInactive,
+    );
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       child: Row(
         children: [
           // Name
-          Expanded(flex: 2, child: _Cell(driver.driverName)),
+          Expanded(
+            flex: 2,
+            child: _Cell(
+              driver.driverName.isNotEmpty
+                  ? driver.driverName
+                  : "Not Available",
+            ),
+          ),
 
           // Phone
-          Expanded(flex: 2, child: _Cell(driver.driverContact ?? 'Not Available')),
+          Expanded(
+            flex: 2,
+            child: _Cell(driver.driverContact ?? 'Not Available'),
+          ),
 
           // Status
           Expanded(
-            child: Center(child: StatusBadge(active: driver.active)),
+            child: Center(
+              child: StatusBadge(
+                label: statusUi.label,
+                color: statusUi.color,
+                display: StatusDisplay.dotOnly,
+              ),
+            ),
           ),
 
           // Actions

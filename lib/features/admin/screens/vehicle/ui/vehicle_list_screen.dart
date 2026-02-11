@@ -3,6 +3,7 @@ import 'package:kmb_app/core/widgets/bars/app_sidebar.dart';
 import 'package:kmb_app/features/admin/screens/vehicle/data/vehicle_repository.dart';
 import 'package:kmb_app/features/admin/screens/vehicle/model/vehicle_model.dart';
 import 'package:kmb_app/features/admin/screens/vehicle/ui/widgets/vehicle_row.dart';
+import 'package:kmb_app/shared/search_box.dart';
 import '../../../widgets/table_shell.dart';
 
 class VehicleListScreen extends StatelessWidget {
@@ -12,14 +13,12 @@ class VehicleListScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Vehicles'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.search),
-            tooltip: 'Search',
-            onPressed: () {},
-          ),
-        ],
+        title: SearchBox(
+          controller: SearchController(),
+
+          // onChanged: filteredOnwers,
+          // hintText: "Type application ID or Name",
+        ),
       ),
       drawer: const AppSidebar(),
       body: FutureBuilder<List<VehicleModel>>(
@@ -43,15 +42,13 @@ class VehicleListScreen extends StatelessWidget {
 
           return Padding(
             padding: const EdgeInsets.all(16),
-           
             child: SimpleTableShell(
               itemCount: vehicles.length,
               columns: const [
                 TableColumn('Regd No', flex: 2),
-                // TableColumn('Status', flex: 2),
 
+                // TableColumn('Status', flex: 2),
                 TableColumn('Actions', flex: 0),
-                
               ],
               body: ListView.separated(
                 itemCount: vehicles.length,
@@ -60,9 +57,7 @@ class VehicleListScreen extends StatelessWidget {
                 itemBuilder: (_, i) => VehicleRow(vehicle: vehicles[i]),
               ),
             ),
-            
           );
-          
         },
       ),
     );

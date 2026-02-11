@@ -28,7 +28,7 @@ class DashboardWidgets extends StatelessWidget {
         icon: Icons.assignment_add,
         color: Colors.orange,
         onTap: () {
-          context.goNamed("application_details");
+          context.goNamed("application_list");
         },
       ),
       DashboardModel(

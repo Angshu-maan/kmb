@@ -6,11 +6,7 @@ import 'owner_response.dart';
 
 class OwnerService {
   Future<OwnerResponse> fetchOwners({String? token}) async {
-    final response = await ApiService.get(
-      ApiConfig.ownerList,
-
-      token: token,
-    );
+    final response = await ApiService.get(ApiConfig.ownerList, token: token);
 
     return OwnerResponse.fromJson(response);
   }

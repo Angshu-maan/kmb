@@ -1,10 +1,4 @@
-
-enum UserRole {
-  superAdmin,
-  chairman,
-  executive,
-  dealing,
-}
+enum UserRole { superAdmin, chairman, executive, dealing }
 
 extension UserRoleX on UserRole {
   String get displayName {

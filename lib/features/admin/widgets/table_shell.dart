@@ -21,9 +21,8 @@ class SimpleTableShell extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // ===== Header =====
           Padding(
             padding: const EdgeInsets.all(16),
             child: Row(

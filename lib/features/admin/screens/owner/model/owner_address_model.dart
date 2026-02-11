@@ -1,46 +1,53 @@
 class OwnerAddress {
-  final String? villageName;
-  final String? wardNo;
-  final String? postOffice;
-  final String? policeStation;
-  final String? pinCode;
+  final String villageName;
+  final String wardNo;
+  final String postOffice;
+  final String policeStation;
+  final String pinCode;
 
   OwnerAddress({
-    this.villageName,
-    this.wardNo,
-    this.postOffice,
-    this.policeStation,
-    this.pinCode,
+    required this.villageName,
+    required this.wardNo,
+    required this.postOffice,
+    required this.policeStation,
+    required this.pinCode,
   });
 
   factory OwnerAddress.fromJson(Map<String, dynamic> json) {
     return OwnerAddress(
-      villageName: json['village_name'],
-      wardNo: json['ward_no'],
-      postOffice: json['post_office'],
-      policeStation: json['police_station'],
-      pinCode: json['pin_code'],
+      villageName: json['village_town']?.toString() ?? '',
+      wardNo: json['post_office']?.toString() ?? '',
+      postOffice: json['police_station']?.toString() ?? '',
+      policeStation: json['district']?.toString() ?? '',
+      pinCode: json['pincode']?.toString() ?? '',
     );
   }
 
-  bool get isEmpty =>
-      villageName == null &&
-      wardNo == null &&
-      postOffice == null &&
-      policeStation == null &&
-      pinCode == null;
-
-  String get formatted {
-    final parts = [
-      villageName,
-      wardNo != null ? 'Ward $wardNo' : null,
-      postOffice,
-      policeStation,
-      pinCode,
-    ];
-
-    return parts
-        .where((e) => e != null && e.trim().isNotEmpty)
-        .join(', ');
+  Map<String, dynamic> toJson() {
+    return {
+      'village_town': villageName,
+      'post_office': wardNo,
+      'police_station': postOffice,
+      'district': policeStation,
+      'pincode': pinCode,
+    };
   }
+
+  bool get isEmpty =>
+      villageName.isEmpty &&
+      postOffice.isEmpty &&
+      policeStation.isEmpty &&
+      postOffice.isEmpty &&
+      wardNo.isEmpty;
+
+  bool get isNotEmpty => !isEmpty;
+
+  String get formatted => [
+    villageName,
+    postOffice,
+    policeStation,
+    postOffice,
+
+    'Ward $wardNo',
+  ].where((e) => e.isNotEmpty).join(', ');
 }

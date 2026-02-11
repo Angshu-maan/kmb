@@ -103,7 +103,6 @@
 //   // }
 // }
 
-
 import 'dart:io';
 
 import 'driver_address_model.dart';
@@ -132,7 +131,7 @@ class DriverModel {
   final DateTime? authCtIssueDate;
   final DateTime? authCtExpiryDate;
 
-  final bool active;
+  final int active;
   final String? documentsFolder;
   final DateTime? createdAt;
   final File? file;
@@ -157,7 +156,7 @@ class DriverModel {
     required this.active,
     this.documentsFolder,
     this.createdAt,
-    this.file
+    this.file,
   });
 
   factory DriverModel.fromJson(Map<String, dynamic> json) {
@@ -170,7 +169,7 @@ class DriverModel {
       driverName: json['driver_name'] ?? '',
 
       driverContact: json['driver_contact'],
-      
+
       driverAddress: json['driver_address'] is Map<String, dynamic>
           ? DriverAddress.fromJson(json['driver_address'])
           : null,
@@ -178,7 +177,8 @@ class DriverModel {
       driverPan: json['driver_pan'],
       driverLicenseNo: json['driver_license_no'],
 
-      driverDlExpiryDate: json['driver_dl_expiry_date'] != null &&
+      driverDlExpiryDate:
+          json['driver_dl_expiry_date'] != null &&
               json['driver_dl_expiry_date'].toString().isNotEmpty
           ? DateTime.tryParse(json['driver_dl_expiry_date'])
           : null,
@@ -196,14 +196,14 @@ class DriverModel {
           ? DateTime.tryParse(json['auth_ct_expiry_date'])
           : null,
 
-      active: json['active'] == 1,
+      active: json['active'],
       documentsFolder: json['documents_folder'],
 
       createdAt: json['created_at'] != null
           ? DateTime.tryParse(json['created_at'])
           : null,
 
-        file: json['']
+      file: json[''],
     );
   }
 

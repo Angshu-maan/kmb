@@ -13,12 +13,7 @@ import '../services/auth_service.dart';
 import '../../../core/utils/otp_validator.dart';
 import '../../../shared/primary_button.dart';
 
-
-
-
 class OTPScreen extends StatefulWidget {
-
-
   final String phoneNumber;
   final String otpToken;
 
@@ -43,7 +38,6 @@ class OTPScreen extends StatefulWidget {
 }
 
 class _OTPScreenState extends State<OTPScreen> {
-  
   final List<TextEditingController> _otpControllers = List.generate(
     6,
     (_) => TextEditingController(),
@@ -128,27 +122,22 @@ class _OTPScreenState extends State<OTPScreen> {
         authProofToken: authProofToken,
       );
 
+      final expiryDate = DateTime.now().add(Duration(seconds: 20));
 
-        final expiryDate = DateTime.now().add(
-    Duration(seconds: 20),
-  );
-
-  // Start global session tracking
-  // AuthState.login(expiry: expiryDate);
+      // Start global session tracking
+      // AuthState.login(expiry: expiryDate);
       // final activeRole = Session['active_role'];
-      
-      // await SecureStorage.saveSession(session);
+
+      await SecureStorage.saveSession(session);
       // debugPrint("JWT SAVED TO SESSION => ${session.jwt}");
 
-      // SessionManager.setSession(session);
+      SessionManager.setSession(session);
 
       // debugPrint('ACTIVE ROLE => ${SessionManager.session!.activeRole}');
       // debugPrint('USER TYPE  => ${SessionManager.session!.userType}');
 
       final authProvider = context.read<AuthProvider>();
       await authProvider.login(session);
-
-
 
       if (!mounted) return;
       final route = RoleRouter.homeRouteForRole(session.activeRole);
@@ -179,10 +168,7 @@ class _OTPScreenState extends State<OTPScreen> {
 
   @override
   Widget build(BuildContext context) {
-
-
     return BackButtonHandler(
-    
       child: Scaffold(
         backgroundColor: Colors.white,
         body: Padding(
@@ -191,14 +177,13 @@ class _OTPScreenState extends State<OTPScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             spacing: 2,
             children: [
-
               SizedBox(
                 height: 150,
                 width: 200,
-               child: Image.asset('assets/images/otp_image.png'),   
+                child: Image.asset('assets/images/otp_image.png'),
               ),
-              const SizedBox(height:10 ,),
-               
+              const SizedBox(height: 10),
+
               const Text("Enter the 6-digit OTP "),
               const SizedBox(height: 6),
               Text(
@@ -231,33 +216,30 @@ class _OTPScreenState extends State<OTPScreen> {
                         FilteringTextInputFormatter.digitsOnly,
                         LengthLimitingTextInputFormatter(1),
                       ],
-                      decoration:  InputDecoration(
+                      decoration: InputDecoration(
                         counterText: "",
                         border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15),
-                            borderSide: BorderSide(
-                              color: const Color.fromARGB(255, 163, 105, 240),
-                              width: 3
-                            )
-  
+                          borderRadius: BorderRadius.circular(15),
+                          borderSide: BorderSide(
+                            color: const Color.fromARGB(255, 163, 105, 240),
+                            width: 3,
+                          ),
                         ),
                         enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15),
-                        borderSide: const BorderSide(
-                        color: const Color.fromARGB(115, 0, 16, 246),
-                        width: 3.0,
+                          borderRadius: BorderRadius.circular(15),
+                          borderSide: const BorderSide(
+                            color: const Color.fromARGB(115, 0, 16, 246),
+                            width: 3.0,
+                          ),
                         ),
-                        
-                       ),
 
                         focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15),
-                        borderSide: const BorderSide(
-                          color: Color.fromARGB(255, 163, 105, 240),
-                          width: 3.0,
+                          borderRadius: BorderRadius.circular(15),
+                          borderSide: const BorderSide(
+                            color: Color.fromARGB(255, 163, 105, 240),
+                            width: 3.0,
+                          ),
                         ),
-                      ),
-                                            
                       ),
                       onChanged: (value) {
                         if (value.isNotEmpty && index < 5) {
@@ -277,7 +259,6 @@ class _OTPScreenState extends State<OTPScreen> {
               AppButton(
                 text: _isLoading ? "Verifying..." : "Verify OTP",
                 onPressed: _isLoading ? null : _verifyOtp,
-              
               ),
 
               const SizedBox(height: 16),
@@ -285,7 +266,9 @@ class _OTPScreenState extends State<OTPScreen> {
               TextButton(
                 onPressed: _canResend ? _resendOtp : null,
                 child: Text(
-                  _canResend ? "Send again" : "Resend OTP in ${_formatTimer()} s",
+                  _canResend
+                      ? "Send again"
+                      : "Resend OTP in ${_formatTimer()} s",
                 ),
               ),
             ],

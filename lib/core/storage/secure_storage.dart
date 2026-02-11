@@ -8,22 +8,20 @@ import 'package:kmb_app/features/provider/auth_provider.dart';
 import 'package:provider/provider.dart';
 import '../../features/auth/models/session.dart';
 
-
-
-
-
 class SecureStorage {
   // ---------------- CONFIG ----------------
   static const _sessionKey = 'auth_session';
   static const _sessionTimestampKey = 'session_timestamp';
   // static const int _expiryDays = 1;
   //  static const int _expirySeconds = 5;
-     static const int _expiryMinutes = 60;
-     static int get expiryMinutes => _expiryMinutes;
+  static const int _expiryMinutes = 60;
+  static int get expiryMinutes => _expiryMinutes;
 
   static final _storage = FlutterSecureStorage(
     aOptions: const AndroidOptions(encryptedSharedPreferences: true),
-    iOptions: const IOSOptions(accessibility: KeychainAccessibility.first_unlock),
+    iOptions: const IOSOptions(
+      accessibility: KeychainAccessibility.first_unlock,
+    ),
   );
 
   // ---------------- SINGLETON & AUTO LOGOUT ----------------
@@ -37,18 +35,21 @@ class SecureStorage {
   static const _checkInterval = Duration(minutes: 5); // check every 10 seconds
 
   void _startAutoLogoutTimer() {
-    
-    
     _autoLogoutTimer?.cancel();
     _autoLogoutTimer = Timer.periodic(_checkInterval, (_) async {
-
-       final authProvider = Provider.of<AuthProvider>(rootNavigatorKey.currentContext!, listen: false);
-  await authProvider.logout();
+      final authProvider = Provider.of<AuthProvider>(
+        rootNavigatorKey.currentContext!,
+        listen: false,
+      );
+      await authProvider.logout();
       final expired = await isExpired();
       if (expired) {
         debugPrint('Session Expired login out');
         await clearAll();
-         rootNavigatorKey.currentState?.pushNamedAndRemoveUntil('/login', (route) => false);
+        rootNavigatorKey.currentState?.pushNamedAndRemoveUntil(
+          '/login',
+          (route) => false,
+        );
       }
     });
   }
@@ -58,14 +59,13 @@ class SecureStorage {
     if (timestamp == null) return true;
     final savedDate = DateTime.fromMillisecondsSinceEpoch(timestamp);
     return DateTime.now().difference(savedDate).inMinutes >= _expiryMinutes;
-
   }
 
   // ---------------- SAVE SESSION ----------------
   /// Saves session and sets timestamp to now.
   static Future<void> saveSession(Session session) async {
     debugPrint('SAVE SESSION CALLED');
-debugPrint('SESSION JSON = ${jsonEncode(session.toJson())}');
+    debugPrint('SESSION JSON = ${jsonEncode(session.toJson())}');
     final now = DateTime.now().millisecondsSinceEpoch;
     await _storage.write(key: _sessionKey, value: jsonEncode(session.toJson()));
     await _storage.write(key: _sessionTimestampKey, value: now.toString());
@@ -81,10 +81,10 @@ debugPrint('SESSION JSON = ${jsonEncode(session.toJson())}');
       final rawSession = await _storage.read(key: _sessionKey);
       final timestampStr = await _storage.read(key: _sessionTimestampKey);
 
-        // 👇 ADD THESE DEBUG LINES
-    debugPrint('LOAD SESSION CALLED');
-    debugPrint('RAW SESSION = $rawSession');
-    debugPrint('RAW TIMESTAMP = $timestampStr');
+      // 👇 ADD THESE DEBUG LINES
+      debugPrint('LOAD SESSION CALLED');
+      debugPrint('RAW SESSION = $rawSession');
+      debugPrint('RAW TIMESTAMP = $timestampStr');
 
       if (rawSession == null || timestampStr == null) return null;
 
@@ -101,8 +101,6 @@ debugPrint('SESSION JSON = ${jsonEncode(session.toJson())}');
         await clearAll();
         return null;
       }
-
-
 
       return Session.fromJson(jsonDecode(rawSession));
     } catch (e) {
@@ -122,11 +120,12 @@ debugPrint('SESSION JSON = ${jsonEncode(session.toJson())}');
     }
   }
 
-   static Future<int?> getSessionTimestamp() async {
+  static Future<int?> getSessionTimestamp() async {
     final ts = await _storage.read(key: _sessionTimestampKey);
     if (ts == null) return null;
     return int.tryParse(ts);
   }
+
   // ---------------- LOGIN STATE ----------------
   static Future<bool> isLoggedIn() async {
     final session = await loadSession();
@@ -135,20 +134,19 @@ debugPrint('SESSION JSON = ${jsonEncode(session.toJson())}');
 
   // ---------------- LOGOUT ----------------
   static Future<void> clearAll() async {
-
     // _autoLogoutTimer?.cancel();
     // _autoLogoutTimer = null;
     // await _storage.delete(key: _sessionKey);
     // await _storage.delete(key: _sessionTimestampKey);
-      await _storage.delete(key: _sessionKey);
+    await _storage.delete(key: _sessionKey);
     await _storage.delete(key: _sessionTimestampKey);
 
     //  AuthState.isLoggedIn.value = false;
 
-    // await _storage.deleteAll();
+    await _storage.deleteAll();
   }
 
-   static Future<bool> isSessionExpired() async {
+  static Future<bool> isSessionExpired() async {
     final ts = await _storage.read(key: _sessionTimestampKey);
     if (ts == null) return false;
 
@@ -168,40 +166,28 @@ debugPrint('SESSION JSON = ${jsonEncode(session.toJson())}');
     }
   }
   // static Future<AppUser> _refreshToken() async{
-  // final acessToken =  
+  // final acessToken =
   // }
 
-
-
-
   static Future<int> secondsLeft() async {
-  final ts = await getSessionTimestamp();
-  if (ts == null) return 0;
+    final ts = await getSessionTimestamp();
+    if (ts == null) return 0;
 
-  final saved = DateTime.fromMillisecondsSinceEpoch(ts);
-  final diff = DateTime.now().difference(saved).inSeconds;
+    final saved = DateTime.fromMillisecondsSinceEpoch(ts);
+    final diff = DateTime.now().difference(saved).inSeconds;
 
-  final remaining = (_expiryMinutes * 60) - diff;
-  return remaining > 0 ? remaining : 0;
+    final remaining = (_expiryMinutes * 60) - diff;
+    return remaining > 0 ? remaining : 0;
+  }
+
+  static Future<int> secondsUntilExpiry() async {
+    final timestamp = await _storage.read(key: _sessionTimestampKey);
+
+    if (timestamp == null) return 0;
+
+    final saved = DateTime.fromMillisecondsSinceEpoch(int.parse(timestamp));
+    final expiryTime = saved.add(Duration(minutes: _expiryMinutes));
+
+    return expiryTime.difference(DateTime.now()).inSeconds;
+  }
 }
-
-
-static Future<int> secondsUntilExpiry() async {
-  final timestamp =
-      await _storage.read(key: _sessionTimestampKey);
-
-  if (timestamp == null) return 0;
-
-final saved =
-    DateTime.fromMillisecondsSinceEpoch(int.parse(timestamp));
-final expiryTime = saved.add(Duration(minutes: _expiryMinutes));
-
-
-  return expiryTime.difference(DateTime.now()).inSeconds;
-}
-
-
-}
-
-
-

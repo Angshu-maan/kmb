@@ -6,16 +6,11 @@ class ApiConfig {
 
   static const String sendOtp = 'user/send/otp';
   static const String verifyOtp = 'user/verify/otp';
-  static const String login     = 'user/signin';
+  static const String login = 'user/signin';
   static const String ownerList = 'owners/list';
   static const String driverList = 'drivers/list';
   static const String vehicleList = 'vehicles/list';
   static const String applicationList = 'applications/list';
-  static const String viewDocument = 'uploads/view-document';
+  static const String viewDocument = 'uploads/view_document';
   static const String reLogin = 'user/relogin';
-  
 }
-
-
-
-

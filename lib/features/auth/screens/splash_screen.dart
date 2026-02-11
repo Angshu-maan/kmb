@@ -124,7 +124,12 @@ class _SplashScreenState extends State<SplashScreen>
         children: [
           ScaleTransition(
             scale: _animation,
-            child: Image.asset('assets/images/logo_black.png', width: 500, height: 300)),
+            child: Image.asset(
+              'assets/images/logo_black.png',
+              width: 500,
+              height: 300,
+            ),
+          ),
           const SizedBox(height: 16),
           const Text(
             "KMB App",

@@ -6,9 +6,6 @@
 // class AppSidebar extends StatefulWidget {
 //   const AppSidebar({super.key});
 
-
-  
-
 //   @override
 //   State<AppSidebar> createState() => _AppSidebarState();
 // }
@@ -20,7 +17,6 @@
 //     final canSeeAdmin = SessionManager.isAdmin;
 //     final  ValueNotifier<bool> isLoggedOutNotifier = ValueNotifier(false);
 //     final String location = GoRouterState.of(context).uri.toString();
-    
 
 //     return Drawer(
 //       child: ListView(
@@ -44,7 +40,7 @@
 //           /// ---------------- MAIN ----------------
 //           ListTile(
 //             leading: const Icon(Icons.home),
-          
+
 //             title: const Text('Home'),
 //             onTap: () {
 //               Navigator.pop(context);
@@ -81,7 +77,7 @@
 //             leading: const Icon(Icons.assignment),
 //             title: const Text('Permit Applications'),
 //             onTap: () {
-//               Navigator.pop(context); 
+//               Navigator.pop(context);
 //               context.goNamed('application_details');
 //             },
 //           ),
@@ -114,7 +110,6 @@
 //               context.goNamed('login');
 //             },
 //           ),
-
 
 //           /// ---------------- ADMINISTRATION ----------------
 //           if (canSeeAdmin) ...[
@@ -152,18 +147,13 @@
 //   }
 // }
 
-
-
-
-
-
-
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kmb_app/core/storage/secure_storage.dart';
 import 'package:kmb_app/core/auth/session_manager.dart';
 import 'package:kmb_app/features/auth/models/session.dart';
+import 'package:kmb_app/features/provider/auth_provider.dart';
+import 'package:provider/provider.dart';
 
 class AppSidebar extends StatefulWidget {
   const AppSidebar({super.key});
@@ -174,28 +164,22 @@ class AppSidebar extends StatefulWidget {
 
 class _AppSidebarState extends State<AppSidebar> {
   final Color activeColor = const Color(0xFF708CD6);
-   
-
-
-
 
   bool _isAnyTabActive(BuildContext context) {
+    final location = GoRouterState.of(context).uri.toString();
 
+    final routes = [
+      '/dashboard/superAdmin',
+      '/list/owner',
+      '/list/driver',
+      '/list/vehicle',
+      '/details/application',
+      '/admin_users',
+      '/admin_roles',
+    ];
 
-  final location = GoRouterState.of(context).uri.toString();
-
-  final routes = [
-    '/dashboard/superAdmin',
-    '/list/owner',
-    '/list/driver',
-    '/list/vehicle',
-    '/details/application',
-    '/admin_users',
-    '/admin_roles',
-  ];
-
-  return routes.any((r) => location.startsWith(r));
-}
+    return routes.any((r) => location.startsWith(r));
+  }
 
   // ---------------- NAV TILE ----------------
   Widget _navTile({
@@ -210,12 +194,9 @@ class _AppSidebarState extends State<AppSidebar> {
 
     bool _drawerOpenedOnce = false;
 
-    
-
-
-  if (!_drawerOpenedOnce) {
-    _drawerOpenedOnce = true;
-  }
+    if (!_drawerOpenedOnce) {
+      _drawerOpenedOnce = true;
+    }
     if (routeName != null) {
       isActive = location.contains(routeName);
     }
@@ -223,18 +204,17 @@ class _AppSidebarState extends State<AppSidebar> {
       isActive = location.startsWith(route);
     }
 
-      // Default to Home if nothing matches
+    // Default to Home if nothing matches
     // if (!isActive && title == 'Home') {
     //   isActive = true;
     // }
 
-
-      //  DEFAULT: If no other tab is active, set Home active
-  // Only apply default active when drawer opens and nothing matches
-  // Only apply default active when drawer opens and nothing matches
-  // if (!isActive && defaultActive && !drawerOpenedOnce) {
-  //   isActive = true;
-  // }
+    //  DEFAULT: If no other tab is active, set Home active
+    // Only apply default active when drawer opens and nothing matches
+    // Only apply default active when drawer opens and nothing matches
+    // if (!isActive && defaultActive && !drawerOpenedOnce) {
+    //   isActive = true;
+    // }
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 250),
@@ -244,19 +224,11 @@ class _AppSidebarState extends State<AppSidebar> {
         color: isActive ? activeColor.withOpacity(0.14) : Colors.transparent,
         borderRadius: BorderRadius.circular(12),
         border: isActive
-            ? Border(
-                left: BorderSide(
-                  width: 4,
-                  color: activeColor,
-                ),
-              )
+            ? Border(left: BorderSide(width: 4, color: activeColor))
             : null,
       ),
       child: ListTile(
-        leading: Icon(
-          icon,
-          color: isActive ? activeColor : Colors.black54,
-        ),
+        leading: Icon(icon, color: isActive ? activeColor : Colors.black54),
         title: Text(
           title,
           style: TextStyle(
@@ -295,15 +267,15 @@ class _AppSidebarState extends State<AppSidebar> {
   @override
   Widget build(BuildContext context) {
     final canSeeAdmin = SessionManager.isAdmin;
-    bool _animatedOnce =false;
+    final authProvider = context.read<AuthProvider>();
 
+    bool _animatedOnce = false;
 
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
           Container(
-            
             child: DrawerHeader(
               decoration: const BoxDecoration(
                 color: Color.fromARGB(255, 163, 105, 240),
@@ -314,7 +286,7 @@ class _AppSidebarState extends State<AppSidebar> {
                   if (!_animatedOnce) {
                     _animatedOnce = true;
                   }
-                  
+
                   return Row(
                     children: [
                       //  CircleAvatar with role icon
@@ -325,26 +297,23 @@ class _AppSidebarState extends State<AppSidebar> {
                           _roleIcon(session?.activeRole),
                           color: const Color(0xFF708CD6),
                           size: 50,
-                          
                         ),
                       ),
-            
+
                       const SizedBox(width: 12),
-            
+
                       Expanded(
-                        
                         child: AnimatedSwitcher(
-            
-                        duration: const Duration(milliseconds: 350),
-                        transitionBuilder: (child, animation) {
-                          return FadeTransition(
-                            opacity: animation,
-                            child: ScaleTransition(
-                              scale: animation,
-                              child: child,
-                            ),
-                          );
-                        },
+                          duration: const Duration(milliseconds: 350),
+                          transitionBuilder: (child, animation) {
+                            return FadeTransition(
+                              opacity: animation,
+                              child: ScaleTransition(
+                                scale: animation,
+                                child: child,
+                              ),
+                            );
+                          },
                           child: Text(
                             'Hi! ${session?.activeRole.toUpperCase() ?? 'GUEST'}',
                             style: const TextStyle(
@@ -395,7 +364,7 @@ class _AppSidebarState extends State<AppSidebar> {
             context: context,
             icon: Icons.assignment,
             title: 'Permit Applications',
-            route: '/details/application',
+            route: '/application/list',
           ),
 
           /// ---------------- LOGOUT ----------------
@@ -403,17 +372,18 @@ class _AppSidebarState extends State<AppSidebar> {
             leading: const Icon(Icons.logout),
             title: const Text('Logout'),
             onTap: () async {
+              // Navigator.pop(context);
               await SecureStorage.clearAll();
-
+              SessionManager.sessionNotifier.value = null;
+              authProvider.forceLogout();
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
                   content: Text('Logged out successfully'),
                   duration: Duration(seconds: 2),
                 ),
               );
-
-              await Future.delayed(const Duration(milliseconds: 200));
-              context.goNamed('login');
+              // await Future.delayed(const Duration(milliseconds: 200));
+              // context.goNamed('login');
             },
           ),
 
@@ -437,12 +407,6 @@ class _AppSidebarState extends State<AppSidebar> {
               icon: Icons.people,
               title: 'Users',
               route: '/admin_users',
-            ),
-            _navTile(
-              context: context,
-              icon: Icons.security,
-              title: 'Roles',
-              route: '/admin_roles',
             ),
           ],
         ],

@@ -5,7 +5,6 @@ import '../../../core/storage/secure_storage.dart';
 import 'package:kmb_app/features/auth/models/session.dart';
 
 class AuthService {
-
   //send otp to mobile
   static Future<String> sendOtp(String phone) async {
     final response = await AuthApi.sendOtp(phone);
@@ -17,8 +16,7 @@ class AuthService {
     return response['data']['token'];
   }
 
-
-//verify otp and get toke
+  //verify otp and get toke
   static Future<String> verifyOtp({
     required String phone,
     required String otp,
@@ -39,13 +37,13 @@ class AuthService {
     if (authToken == null || authToken.toString().isEmpty) {
       throw Exception('Auth proof token missing');
     }
-    
-      // await SecureStorage.saveSession(
-      //   authToken
-      // );
-      // await SecureStorage.saveSession(phone as Session);
-      // await SecureStorage.saveSession('0' as Session);
-    
+
+    // await SecureStorage.saveSession(
+    //   authToken
+    // );
+    // await SecureStorage.saveSession(phone as Session);
+    // await SecureStorage.saveSession('0' as Session);
+
     return authToken.toString();
   }
 
@@ -89,49 +87,31 @@ class AuthService {
       userType: userType,
     );
 
-  // ✅ IMPORTANT: update session manager
+    // ✅ IMPORTANT: update session manager
     SessionManager.setSession(session);
     await SecureStorage.saveSession(session);
 
     return session;
   }
 
-
-   static Future<String> reLoggedIn({
+  static Future<String> reLoggedIn({
     required String phone,
     required String refreshtoken,
   }) async {
-    final response = await AuthApi.reLogin(
-      phone: phone,
-      token: refreshtoken,
-    );
+    final response = await AuthApi.reLogin(phone: phone, token: refreshtoken);
 
     if (response['status'] != 'success') {
       throw Exception(response['message']);
     }
 
     final res = response['data']?['token'];
-    
 
     print('Relogin =>  $res');
 
-    if ( res== null || res.toString().isEmpty) {
+    if (res == null || res.toString().isEmpty) {
       throw Exception('Auth proof token missing');
     }
 
     return res.toString();
   }
-
-
-
-
-
 }
-
-
-
-
-
-
-
-

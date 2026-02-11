@@ -1,6 +1,3 @@
-import 'package:flutter/foundation.dart';
-import 'package:flutter/rendering.dart';
-
 import '../../../core/network/api_client.dart';
 import '../../../config/api_config.dart';
 
@@ -48,7 +45,7 @@ class AuthApi {
       throw Exception(response['message'] ?? 'Login failed');
     }
 
-    return response; // returns JWT
+    return response;
   }
 
   static Future<Map<String, dynamic>> resendOtp({
@@ -67,11 +64,11 @@ class AuthApi {
     return response;
   }
 
-  static Future<Map<String,dynamic>> reLogin({
+  static Future<Map<String, dynamic>> reLogin({
     required String phone,
-    required String token
-  }) async{
-    final  response = await ApiService.post(ApiConfig.reLogin, {
+    required String token,
+  }) async {
+    final response = await ApiService.post(ApiConfig.reLogin, {
       "phone_number": phone,
       "token": token,
     });
@@ -80,15 +77,10 @@ class AuthApi {
     //   debugPrint('reLogin => $response');
     // }
 
-
-       if (response['status'] != 'success') {
+    if (response['status'] != 'success') {
       throw Exception(response['message'] ?? 'Failed to resend OTP');
     }
 
     return response;
-    
   }
-
-
-  
 }

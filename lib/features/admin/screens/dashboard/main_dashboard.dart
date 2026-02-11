@@ -9,7 +9,6 @@ import '../../../../core/widgets/bars/app_sidebar.dart';
 import '../../../../core/widgets/bars/app_bottom_bar.dart';
 import '../../../provider/auth_provider.dart';
 
-
 class SuperAdminDashboard extends StatefulWidget {
   const SuperAdminDashboard({super.key});
 
@@ -22,14 +21,13 @@ class _SuperAdminDashboardState extends State<SuperAdminDashboard> {
 
   @override
   Widget build(BuildContext context) {
-     final auth = context.watch<AuthProvider>(); 
+    final auth = context.watch<AuthProvider>();
     final role = auth.role;
-
 
     return BackButtonHandler(
       isRoot: true,
       child: Scaffold(
-        drawer: AppSidebar(), 
+        drawer: AppSidebar(),
 
         appBar: AppBar(
           title: Column(
@@ -61,7 +59,6 @@ class _SuperAdminDashboardState extends State<SuperAdminDashboard> {
   }
 }
 
-
 //
 class _HomeDashboardPage extends StatelessWidget {
   const _HomeDashboardPage();
@@ -72,13 +69,8 @@ class _HomeDashboardPage extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: const [
-          DashboardWidgets(),
-        ],
+        children: const [DashboardWidgets()],
       ),
     );
   }
 }
-
-
-// 700

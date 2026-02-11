@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:kmb_app/core/auth/user_role.dart';
 
 class RoleRouter {
   static const String adminDashboard = 'admin_dashboard';
@@ -28,6 +29,19 @@ class RoleRouter {
       default:
         debugPrint('⚠️ Unknown role received: $role');
         return login;
+    }
+  }
+
+  static String goHome(UserRole role) {
+    switch (role) {
+      case UserRole.superAdmin:
+        return adminDashboard;
+      case UserRole.executive:
+        return executiveDashboard;
+      case UserRole.dealing:
+        return dealerDashboard;
+      case UserRole.chairman:
+        return chairmanDashboard;
     }
   }
 }

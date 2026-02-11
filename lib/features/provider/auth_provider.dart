@@ -12,7 +12,7 @@ UserRole mapRole(String role) {
       return UserRole.superAdmin;
     case 'chairman':
       return UserRole.chairman;
-    case 'executive_officer':
+    case 'executive officer':
       return UserRole.executive;
     case 'dealings':
       return UserRole.dealing;
@@ -20,8 +20,6 @@ UserRole mapRole(String role) {
       throw Exception('Unknown role: $role');
   }
 }
-
-
 
 // class AuthProvider with ChangeNotifier {
 //   bool _isLoggedIn = false;
@@ -113,11 +111,6 @@ UserRole mapRole(String role) {
 //   }
 // }
 
-
-
-
-
-
 class AuthProvider with ChangeNotifier, WidgetsBindingObserver {
   bool _isLoggedIn = false;
   Session? _session;
@@ -140,7 +133,6 @@ class AuthProvider with ChangeNotifier, WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
     _startAutoLogoutTimer();
   }
-
 
   @override
   void dispose() {
@@ -205,17 +197,14 @@ class AuthProvider with ChangeNotifier, WidgetsBindingObserver {
 
   void _startAutoLogoutTimer() {
     _autoLogoutTimer?.cancel();
-    _autoLogoutTimer = Timer.periodic(
-      _dynamicInterval,
-      (_) async {
-        final expired = await SecureStorage.isSessionExpired();
-        
-        if (expired) {
-          await _checkAndLogoutIfExpired();
-          // await logout(reason: "Session expired. Please login again.");
-        }
-      },
-    );
+    _autoLogoutTimer = Timer.periodic(_dynamicInterval, (_) async {
+      final expired = await SecureStorage.isSessionExpired();
+
+      if (expired) {
+        await _checkAndLogoutIfExpired();
+        // await logout(reason: "Session expired. Please login again.");
+      }
+    });
   }
 
   Duration get _dynamicInterval {
@@ -236,5 +225,7 @@ class AuthProvider with ChangeNotifier, WidgetsBindingObserver {
     }
   }
 
-  
+  void forceLogout() {
+    notifyListeners(); // 🔥 this triggers GoRouter redirect
+  }
 }
