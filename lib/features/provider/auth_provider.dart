@@ -117,7 +117,7 @@ class AuthProvider with ChangeNotifier, WidgetsBindingObserver {
   UserRole? _role;
 
   Timer? _autoLogoutTimer;
-  Timer? _countdownTimer;
+  // Timer? _countdownTimer;
 
   int _secondsLeft = 0;
   int get secondsLeft => _secondsLeft;
@@ -223,9 +223,5 @@ class AuthProvider with ChangeNotifier, WidgetsBindingObserver {
     if (expired) {
       await logout(reason: "Session expired. Please login again.");
     }
-  }
-
-  void forceLogout() {
-    notifyListeners(); // 🔥 this triggers GoRouter redirect
   }
 }

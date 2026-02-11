@@ -1,26 +1,79 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:kmb_app/core/auth/user_role.dart';
+
+import 'package:kmb_app/features/admin/widgets/dashboard_widgets.dart';
+import 'package:kmb_app/shared/back_button_handler.dart';
+
 import '../../../../core/widgets/bars/app_sidebar.dart';
+import '../../../../core/widgets/bars/app_bottom_bar.dart';
+import '../../../provider/auth_provider.dart';
 
-class DealerDashboardPage extends StatelessWidget {
-  DealerDashboardPage({super.key});
+class DealerDashboardPage extends StatefulWidget {
+  const DealerDashboardPage({super.key});
 
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  @override
+  State<DealerDashboardPage> createState() => _DealerDashboardPageState();
+}
+
+class _DealerDashboardPageState extends State<DealerDashboardPage> {
+  int _selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      drawer: const AppSidebar(),
-      appBar: AppBar(
-        title: const Text('Dashboard'),
-        leading: IconButton(
-          icon: const Icon(Icons.menu),
-          onPressed: () {
-            _scaffoldKey.currentState?.openDrawer();
-          },
+    final role = context.watch<AuthProvider>().role;
+
+    return BackButtonHandler(
+      isRoot: true,
+      child: Scaffold(
+        drawer: AppSidebar(),
+
+        appBar: AppBar(
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                role?.displayName ?? 'Dashboard',
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+        ),
+
+        body: IndexedStack(
+          index: _selectedIndex,
+          children: const [
+            _HomeDashboardPage(),
+            Center(child: Text('Notifications Page')),
+            Center(child: Text('Profile Page')),
+          ],
+        ),
+
+        bottomNavigationBar: AppBottomBar(
+          currentIndex: _selectedIndex,
+          onTap: (index) => setState(() => _selectedIndex = index),
         ),
       ),
-      body: const Center(child: Text('Dashboard Content')),
     );
   }
+}
+
+//
+class _HomeDashboardPage extends StatelessWidget {
+  const _HomeDashboardPage();
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: const [DashboardWidgets()],
+      ),
+    );
+  }
+}
+
+void main() {
+  runApp(MaterialApp(home: DealerDashboardPage()));
 }

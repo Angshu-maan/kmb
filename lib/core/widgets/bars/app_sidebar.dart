@@ -165,21 +165,21 @@ class AppSidebar extends StatefulWidget {
 class _AppSidebarState extends State<AppSidebar> {
   final Color activeColor = const Color(0xFF708CD6);
 
-  bool _isAnyTabActive(BuildContext context) {
-    final location = GoRouterState.of(context).uri.toString();
+  // bool _isAnyTabActive(BuildContext context) {
+  //   final location = GoRouterState.of(context).uri.toString();
 
-    final routes = [
-      '/dashboard/superAdmin',
-      '/list/owner',
-      '/list/driver',
-      '/list/vehicle',
-      '/details/application',
-      '/admin_users',
-      '/admin_roles',
-    ];
+  //   final routes = [
+  //     '/dashboard/superAdmin',
+  //     '/list/owner',
+  //     '/list/driver',
+  //     '/list/vehicle',
+  //     '/details/application',
+  //     '/admin_users',
+  //     '/admin_roles',
+  //   ];
 
-    return routes.any((r) => location.startsWith(r));
-  }
+  //   return routes.any((r) => location.startsWith(r));
+  // }
 
   // ---------------- NAV TILE ----------------
   Widget _navTile({
@@ -341,6 +341,19 @@ class _AppSidebarState extends State<AppSidebar> {
 
           _navTile(
             context: context,
+            icon: Icons.swipe,
+            title: 'Switch Role',
+            routeName: SessionManager.homeRouteName,
+          ),
+          _navTile(
+            context: context,
+            icon: Icons.home,
+            title: 'My profile',
+            route: '/profile/details',
+          ),
+
+          _navTile(
+            context: context,
             icon: Icons.person,
             title: 'Owners',
             route: '/list/owner',
@@ -375,15 +388,13 @@ class _AppSidebarState extends State<AppSidebar> {
               // Navigator.pop(context);
               await SecureStorage.clearAll();
               SessionManager.sessionNotifier.value = null;
-              authProvider.forceLogout();
+              authProvider.logout();
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
                   content: Text('Logged out successfully'),
                   duration: Duration(seconds: 2),
                 ),
               );
-              // await Future.delayed(const Duration(milliseconds: 200));
-              // context.goNamed('login');
             },
           ),
 

@@ -6,6 +6,7 @@ import 'package:kmb_app/core/routes/role_router.dart';
 import 'package:kmb_app/features/admin/screens/application/application_list_screen.dart';
 import 'package:kmb_app/features/admin/screens/application/applictaion_details_screen.dart';
 import 'package:kmb_app/features/admin/screens/application/model/application_model.dart';
+import 'package:kmb_app/features/admin/screens/common/profile_page.dart';
 import 'package:kmb_app/features/admin/screens/driver/model/driver_model.dart';
 
 import 'package:kmb_app/features/admin/screens/driver/ui/driver_details_screen.dart';
@@ -91,6 +92,12 @@ GoRouter appRouter(AuthProvider authProvider) {
         path: '/otp',
         name: 'otp',
         builder: (context, state) => OTPScreen.fromGoRouter(context, state),
+      ),
+
+      GoRoute(
+        path: '/profile/details',
+        name: 'profile_details',
+        builder: (_, __) => ProfilePage(),
       ),
 
       // Dashboards
