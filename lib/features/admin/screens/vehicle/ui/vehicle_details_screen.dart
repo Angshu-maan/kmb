@@ -40,7 +40,7 @@ class VehicleDetailsScreen extends StatelessWidget {
 
             // Photo placeholder
             Container(
-              height: 140,
+              height: 200,
               width: double.infinity,
               decoration: BoxDecoration(
                 border: Border.all(

@@ -1,8 +1,12 @@
+import 'package:flutter/material.dart';
 import 'package:kmb_app/core/auth/session_manager.dart';
+import 'package:kmb_app/features/auth/models/role_switch.dart';
 
 import '../api/auth_api.dart';
 import '../../../core/storage/secure_storage.dart';
 import 'package:kmb_app/features/auth/models/session.dart';
+
+
 
 class AuthService {
   //send otp to mobile
@@ -87,31 +91,76 @@ class AuthService {
       userType: userType,
     );
 
-    // ✅ IMPORTANT: update session manager
+    // IMPORTANT: update session manager
     SessionManager.setSession(session);
     await SecureStorage.saveSession(session);
 
     return session;
   }
 
-  static Future<String> reLoggedIn({
-    required String phone,
-    required String refreshtoken,
+  // static Future<String> reLoggedIn({
+  //   required String phone,
+  //   required String refreshtoken,
+  // }) async {
+  //   final response = await AuthApi.reLogin(phone: phone, token: refreshtoken);
+
+  //   if (response['status'] != 'success') {
+  //     throw Exception(response['message']);
+  //   }
+
+  //   final res = response['data']?['token'];
+
+  //   print('Relogin =>  $res');
+
+  //   if (res == null || res.toString().isEmpty) {
+  //     throw Exception('Auth proof token missing');
+  //   }
+
+  //   return res.toString();
+  // }
+
+  // static Future<String> reLoggedIn({
+  //   required String phone,
+  //   required String refreshtoken,
+  // }) async {
+  //   final response = await AuthApi.reLogin(phone: phone, token: refreshtoken);
+
+  //   if (response['status'] != 'success') {
+  //     throw Exception(response['message']);
+  //   }
+
+  //   final res = response['data']?['token'];
+
+  //   print('Relogin =>  $res');
+
+  //   if (res == null || res.toString().isEmpty) {
+  //     throw Exception('Auth proof token missing');
+  //   }
+
+  //   return res.toString();
+  // }
+
+
+  static Future<String> switchRole({
+    required String role,
+    required String token,
   }) async {
-    final response = await AuthApi.reLogin(phone: phone, token: refreshtoken);
+    final response = await AuthApi.roleSwitch(
+      token: token,
+      role: role,
+    );
 
     if (response['status'] != 'success') {
-      throw Exception(response['message']);
+      throw Exception(response['message'] ?? "Role switch failed");
     }
 
-    final res = response['data']?['token'];
+    final newToken = response['data']?['token'];
 
-    print('Relogin =>  $res');
-
-    if (res == null || res.toString().isEmpty) {
-      throw Exception('Auth proof token missing');
+    if (newToken == null || newToken.toString().isEmpty) {
+      throw Exception("New token not received");
     }
 
-    return res.toString();
+    return newToken.toString();
   }
+
 }

@@ -36,6 +36,8 @@ class SessionManager {
     return 'login';
   }
 
+  
+
   static Future<void> load() async {
     print('SessionManager.load() CALLED');
     final s = await SecureStorage.loadSession();
@@ -48,6 +50,6 @@ class SessionManager {
   static Future<void> clear() async {
     sessionNotifier.value = null;
     await SessionManager.clear();
-    // await SecureStorage.clearAll();
+    await SecureStorage.clearAll();
   }
 }

@@ -21,7 +21,7 @@ UserRole mapRole(String role) {
       return UserRole.superAdmin;
     case 'chairman':
       return UserRole.chairman;
-    case 'executive_officer':
+    case 'executive officer':
       return UserRole.executive;
     case 'dealings':
       return UserRole.dealing;

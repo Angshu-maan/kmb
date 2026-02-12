@@ -1,30 +1,4 @@
 
-// import 'package:flutter/material.dart';
-// import 'package:flutter_native_splash/flutter_native_splash.dart';
-// import 'package:kmb_app/core/auth/session_manager.dart';
-// import 'package:kmb_app/core/routes/app_router.dart';
-
-// void main() async {
-//   WidgetsFlutterBinding.ensureInitialized();
-//     await SessionManager.load();
-
-//   runApp(const MyApp());
-//   FlutterNativeSplash.remove();
-// }
-
-// class MyApp extends StatelessWidget {
-//   const MyApp({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp.router(
-//       title: 'Kokrajhar Municipal Board',
-//       debugShowCheckedModeBanner: false,
-//       routerConfig: appRouter,
-//       theme: ThemeData(primarySwatch: Colors.blue),
-//     );
-//   }
-// }
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -61,12 +35,7 @@ void main() async {
       child:  const MyApp(),
     ),
   );
-  // runApp(
-  //   ChangeNotifierProvider<AuthProvider>.value(
-  //     value: authProvider,
-  //     child: const MyApp(),
-  //   ),
-  // );
+
 
   FlutterNativeSplash.remove();
 }
@@ -87,15 +56,7 @@ class MyApp extends StatelessWidget {
      
     );
   }
-  // @override
-  // Widget build(BuildContext context) {
-  //   return MaterialApp(
-  //     title: 'Kokrajhar Municipal Board',
-  //     debugShowCheckedModeBanner: false,
-  //  home: OTPScreen(phoneNumber: '', otpToken: ''),
-  //     theme: ThemeData(primarySwatch: Colors.blue),
-  //   );
-  // }
+
 }
 
 

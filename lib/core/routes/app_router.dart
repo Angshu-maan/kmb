@@ -2,6 +2,7 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 
 import 'package:kmb_app/core/auth/session_manager.dart';
+import 'package:kmb_app/core/auth/user_role.dart';
 import 'package:kmb_app/core/routes/role_router.dart';
 import 'package:kmb_app/features/admin/screens/application/application_list_screen.dart';
 import 'package:kmb_app/features/admin/screens/application/applictaion_details_screen.dart';
@@ -39,34 +40,68 @@ import '../../features/admin/screens/owner/ui/owner_details_screen.dart';
 
 GoRouter appRouter(AuthProvider authProvider) {
   return GoRouter(
-    initialLocation: '/splash',
-    // initialLocation: '/dashboard/superAdmin',
+    // initialLocation: '/splash',
+    initialLocation: '/application/list',
 
     // This makes GoRouter react to login / logout
     refreshListenable: authProvider,
 
     // refreshListenable: SessionManager().sessionNotifier,
+    // redirect: (context, state) {
+    //   final loggedIn = authProvider.isLoggedIn;
+    //   final location = state.matchedLocation;
+
+    //   // Allow splash always
+    //   if (location == '/splash') return null;
+
+    //   // Not logged in → force login
+    //   if (!loggedIn) {
+    //     if (location == '/login' || location == '/otp') return null;
+    //     return '/login';
+    //   }
+
+    //   // Logged in → block auth screens
+    //   if (loggedIn && (location == '/login' || location == '/otp')) {
+
+    //     final role = authProvider.role;
+    //     if (role == null) return '/login';
+
+    //     // If RoleRouter returns route name, convert to path
+    //     final routeName = RoleRouter.homeRouteForRole(role.name);
+    //     return _pathFromRouteName(routeName);
+    //   }
+
+      
+
+    //   return null;
+    // },
     redirect: (context, state) {
       final loggedIn = authProvider.isLoggedIn;
+      final role = authProvider.role;
       final location = state.matchedLocation;
 
-      // Allow splash always
+      // Always allow splash
       if (location == '/splash') return null;
 
-      // Not logged in → force login
+      //  Not logged in → force login
       if (!loggedIn) {
         if (location == '/login' || location == '/otp') return null;
         return '/login';
       }
 
-      // Logged in → block auth screens
+      //  Logged in but trying to access login/otp
       if (loggedIn && (location == '/login' || location == '/otp')) {
-        final role = authProvider.role;
-        if (role == null) return '/login';
+        return _pathFromRouteName(
+          RoleRouter.homeRouteForRole(role!.name),
+        );
+      }
 
-        // If RoleRouter returns route name, convert to path
-        final routeName = RoleRouter.homeRouteForRole(role.name);
-        return _pathFromRouteName(routeName);
+      //  Extra protection: block admin-only route
+      if (location.startsWith('/admin_users') &&
+          role != UserRole.superAdmin) {
+        return _pathFromRouteName(
+          RoleRouter.homeRouteForRole(role!.name),
+        );
       }
 
       return null;

@@ -1,10 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:kmb_app/core/auth/session_manager.dart';
 import 'package:kmb_app/core/global/globals.dart';
 import 'package:kmb_app/features/auth/models/session.dart';
 import 'package:kmb_app/core/auth/user_role.dart';
 import 'package:kmb_app/core/storage/secure_storage.dart';
+import 'package:kmb_app/features/auth/services/auth_service.dart';
 
 UserRole mapRole(String role) {
   switch (role) {
@@ -224,4 +226,60 @@ class AuthProvider with ChangeNotifier, WidgetsBindingObserver {
       await logout(reason: "Session expired. Please login again.");
     }
   }
+
+// Future<void> switchRole(String newRole) async {
+//   if (_session == null) return;
+
+//   final newToken = await AuthService.switchRole(
+//     role: newRole,
+//     token: _session!.jwt,
+//   );
+
+//   final updatedSession = _session!.copyWith(
+//     jwt: newToken,
+//     activeRole: newRole,
+//   );
+
+//   _session = updatedSession;
+//   _role = mapRole(newRole);
+
+//   SessionManager.setSession(updatedSession);
+//   await SecureStorage.saveSession(updatedSession);
+
+//   notifyListeners();
+// }
+
+
+//  Session? _session;
+
+//   Session? get session => _session;
+
+  Future<void> switchRole(String newRole) async {
+    if (_session == null) {
+      throw Exception("Session not found");
+    }
+
+    try {
+      final newToken = await AuthService.switchRole(
+        role: newRole,
+        token: _session!.jwt,
+      );
+
+  debugPrint("Current JWT ${_session!.jwt}");
+      final updatedSession = _session!.copyWith(
+        jwt: newToken,
+        activeRole: newRole,
+      );
+
+      _session = updatedSession;
+
+      SessionManager.setSession(updatedSession);
+      await SecureStorage.saveSession(updatedSession);
+
+      notifyListeners();
+    } catch (e) {
+      rethrow;
+    }
+  }
+
 }

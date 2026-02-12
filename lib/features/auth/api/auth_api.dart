@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 import '../../../core/network/api_client.dart';
 import '../../../config/api_config.dart';
 
@@ -83,4 +85,49 @@ class AuthApi {
 
     return response;
   }
+
+
+
+  
+static Future<Map<String, dynamic>> roleSwitch({
+  required String role,
+  required String token,
+}) async {
+  final response = await ApiService.post(
+  
+    ApiConfig.roleSwitch,
+    {
+      "new_role": role,
+    },
+    token: token, //  SEND TOKEN IN HEADER
+
+    
+  );
+
+  if (response['status'] != 'success') {
+    throw Exception(response['message'] ?? 'Failed to switch role');
+  }
+
+  return response;
+}
+
+
+
+//   static Future<void> switchRole(String role, String token) async {
+//   final uri = Uri.parse("$baseUrl?path=user/role_switch");
+
+//   final response = await http.post(
+//     uri,
+//     headers: {
+//       "Content-Type": "application/json",
+//       "Authorization": "Bearer $token",
+//       "X-Client-Type": "android"
+//     },
+//     body: jsonEncode({
+//       "new_role": role,
+//     }),
+//   );
+
+//   print("switchRole Response: ${response.body}");
+// }
 }
