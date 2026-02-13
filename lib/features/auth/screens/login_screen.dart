@@ -138,7 +138,7 @@ class _LoginPageState extends State<LoginPage> {
                   Container(
                     padding: const EdgeInsets.all(24),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: Theme.of(context).cardColor,
                       borderRadius: BorderRadius.circular(20),
                       boxShadow: const [
                         BoxShadow(
@@ -172,7 +172,7 @@ class _LoginPageState extends State<LoginPage> {
 
                           Container(
                             decoration: BoxDecoration(
-                              color: Colors.grey.shade100,
+                           color: Theme.of(context).cardColor,
                               borderRadius: BorderRadius.circular(14),
                             ),
                             child: TextFormField(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kmb_app/shared/day_night_toggle.dart';
 import 'package:provider/provider.dart';
 import 'package:kmb_app/core/auth/user_role.dart';
 
@@ -26,9 +27,17 @@ class _DealerDashboardPageState extends State<DealerDashboardPage> {
     return BackButtonHandler(
       isRoot: true,
       child: Scaffold(
+         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         drawer: AppSidebar(),
 
         appBar: AppBar(
+          actions: [
+                      
+              Padding(
+              padding: EdgeInsets.only(right: 16),
+              child: DayNightToggle(),
+           )
+          ],
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [

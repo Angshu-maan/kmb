@@ -57,7 +57,7 @@ class _ApprovePermitDialogState extends State<ApprovePermitDialog> {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Colors.yellow.shade100,
+                  color: Theme.of(context).cardColor,
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: const Text(

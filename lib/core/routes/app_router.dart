@@ -40,8 +40,8 @@ import '../../features/admin/screens/owner/ui/owner_details_screen.dart';
 
 GoRouter appRouter(AuthProvider authProvider) {
   return GoRouter(
-    // initialLocation: '/splash',
-    initialLocation: '/application/list',
+    initialLocation: '/splash',
+    // initialLocation: '/application/list',
 
     // This makes GoRouter react to login / logout
     refreshListenable: authProvider,

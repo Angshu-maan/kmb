@@ -34,6 +34,7 @@ class _DriverScreenListState extends State<DriverScreenList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         title: SearchBox(
           controller: SearchController(),

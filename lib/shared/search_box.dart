@@ -19,7 +19,7 @@ class SearchBox extends StatelessWidget {
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: theme.colorScheme.outline.withOpacity(0.5)),
+        border: Border.all( color: Theme.of(context).cardColor,),
       ),
       child: TextField(
         controller: controller,

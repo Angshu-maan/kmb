@@ -12,21 +12,26 @@ class OwnerRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colors = theme.colorScheme;
+
     final statusUi = mapStatus(
       status: owner.active,
       type: StatusType.activeInactive,
     );
-    return Padding(
+
+    return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      color: Colors.transparent, // important for theme
       child: Row(
         children: [
-          // Name
+          /// ================= NAME =================
           Expanded(flex: 2, child: _Cell(owner.ownerName)),
 
-          // Phone
+          /// ================= PHONE =================
           Expanded(flex: 2, child: _Cell(owner.ownerPhone)),
 
-          // Status
+          /// ================= STATUS =================
           Expanded(
             child: Center(
               child: StatusBadge(
@@ -37,12 +42,15 @@ class OwnerRow extends StatelessWidget {
             ),
           ),
 
-          // Actions
+          /// ================= ACTION =================
           Expanded(
             child: Align(
               alignment: Alignment.centerRight,
               child: IconButton(
-                icon: const Icon(Icons.visibility),
+                icon: Icon(
+                  Icons.visibility,
+                  color: colors.onSurface, 
+                ),
                 tooltip: 'View Owner',
                 onPressed: () {
                   context.pushNamed('owner_details', extra: owner);
@@ -57,7 +65,7 @@ class OwnerRow extends StatelessWidget {
 }
 
 /// ===============================
-/// Table Cell (SAFE & REUSABLE)
+/// THEME SAFE TABLE CELL
 /// ===============================
 class _Cell extends StatelessWidget {
   final String text;
@@ -70,7 +78,10 @@ class _Cell extends StatelessWidget {
       text,
       overflow: TextOverflow.ellipsis,
       maxLines: 1,
-      style: const TextStyle(fontSize: 14, color: Colors.black87),
+      style: Theme.of(context)
+          .textTheme
+          .bodyMedium
+          ?.copyWith(fontSize: 14),
     );
   }
 }

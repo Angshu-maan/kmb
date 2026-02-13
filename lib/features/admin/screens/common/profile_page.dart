@@ -63,6 +63,7 @@ class _ProfilePageState extends State<ProfilePage> {
     final UserRole role = auth.role!;
 
     return Scaffold(
+       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),

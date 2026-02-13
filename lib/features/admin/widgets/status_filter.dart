@@ -49,7 +49,7 @@ class StatusFilterToggle extends StatelessWidget {
   }) {
     final theme = Theme.of(context);
 
-    return ChoiceChip(
+    return FilterChip(
       label: Text(
         label,
         style: TextStyle(
@@ -62,7 +62,7 @@ class StatusFilterToggle extends StatelessWidget {
       selected: selected,
       onSelected: (_) => onTap(),
       selectedColor: theme.colorScheme.primary,
-      backgroundColor: theme.colorScheme.surfaceContainerHighest,
+      // backgroundColor: theme.colorScheme.surfaceContainerHighest,
     );
   }
 }

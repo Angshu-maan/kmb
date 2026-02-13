@@ -13,7 +13,7 @@ class DriverDetailsImagePlaceholder extends StatelessWidget {
       width: double.infinity,
       decoration: BoxDecoration(
         border: Border.all(
-          color: Colors.grey,
+           color: Theme.of(context).cardColor,
         
         ),
         borderRadius: BorderRadius.circular(8),

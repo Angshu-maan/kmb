@@ -11,6 +11,38 @@ class ApiService {
   static Future<Map<String, dynamic>> post(
     String endpoint,
     Map<String, dynamic> body, {
+     String? token ,
+  }) async {
+    final url = "${ApiConfig.baseUrl}/$endpoint";
+    debugPrint("API POST URL => $url");
+    debugPrint("API POST BODY => $body");
+    debugPrint("API POST header token => $token");
+    try {
+      final response = await http
+          .post(
+            Uri.parse(url),
+
+            headers: {
+              "Content-Type": "application/json",
+               "Authorization": "Bearer $token",
+              // "X-Client-Type":"android"
+            },
+            body: jsonEncode(body),
+          )
+          .timeout(_timeout);
+
+
+
+      return _handleResponse(response);
+    } on TimeoutException {
+      throw Exception("Request timeout. Please try again.");
+    } catch (e) {
+      throw Exception("Network error: $e");
+    }
+  }
+  static Future<Map<String, dynamic>> roleSwitch(
+    String endpoint,
+    Map<String, dynamic> body, {
     String? token ,
   }) async {
     final url = "${ApiConfig.baseUrl}/$endpoint";
@@ -24,7 +56,7 @@ class ApiService {
 
             headers: {
               "Content-Type": "application/json",
-              if (token != null) "Authorization": "Bearer $token",
+              if (token != null) "Authentication": "Bearer $token",
               "X-Client-Type":"android"
             },
             body: jsonEncode(body),
@@ -70,6 +102,10 @@ class ApiService {
       throw Exception("Network error: $e");
     }
   }
+
+
+
+
 static Map<String, dynamic> _handleResponse(http.Response response) {
   final statusCode = response.statusCode;
 
@@ -103,3 +139,38 @@ static Map<String, dynamic> _handleResponse(http.Response response) {
 
   
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

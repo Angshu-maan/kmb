@@ -93,13 +93,13 @@ static Future<Map<String, dynamic>> roleSwitch({
   required String role,
   required String token,
 }) async {
-  final response = await ApiService.post(
+  final response = await ApiService.roleSwitch(
   
     ApiConfig.roleSwitch,
     {
       "new_role": role,
     },
-    token: token, //  SEND TOKEN IN HEADER
+    token: token, 
 
     
   );

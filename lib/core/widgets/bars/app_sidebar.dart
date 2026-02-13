@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:kmb_app/core/storage/secure_storage.dart';
 import 'package:kmb_app/core/auth/session_manager.dart';
 import 'package:kmb_app/features/provider/auth_provider.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 
 class AppSidebar extends StatelessWidget {
   const AppSidebar({super.key});
@@ -34,32 +35,51 @@ class AppSidebar extends StatelessWidget {
     String? route,
     String? routeName,
   }) {
-    final location = GoRouterState.of(context).uri.toString();
+    final state = GoRouterState.of(context);
+    final location = state.uri.toString();
+
     bool isActive = false;
 
     if (routeName != null) {
-      isActive = location.contains(routeName);
+      isActive = state.name == routeName;
     } else if (route != null) {
       isActive = location.startsWith(route);
     }
+
+    final theme = Theme.of(context);
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 250),
       margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: isActive ? activeColor.withOpacity(0.14) : Colors.transparent,
+        color: isActive
+            ? theme.colorScheme.primary.withOpacity(0.12)
+            : Colors.transparent,
         borderRadius: BorderRadius.circular(12),
         border: isActive
-            ? const Border(left: BorderSide(width: 4, color: activeColor))
+            ? Border(
+                left: BorderSide(
+                  width: 4,
+                  color: theme.colorScheme.primary,
+                ),
+              )
             : null,
       ),
       child: ListTile(
-        leading: Icon(icon, color: isActive ? activeColor : Colors.black54),
+        leading: Icon(
+          icon,
+          color: isActive
+              ? theme.colorScheme.primary
+              : theme.colorScheme.onSurface,
+        ),
         title: Text(
           title,
-          style: TextStyle(
-            color: isActive ? activeColor : Colors.black87,
-            fontWeight: isActive ? FontWeight.w700 : FontWeight.normal,
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: isActive
+                ? theme.colorScheme.primary
+                : theme.colorScheme.onSurface,
+            fontWeight:
+                isActive ? FontWeight.w700 : FontWeight.normal,
           ),
         ),
         onTap: () {
@@ -80,39 +100,68 @@ class AppSidebar extends StatelessWidget {
         final session = auth.session;
         if (session == null) return const SizedBox();
 
+        final theme = Theme.of(context);
+
         return Container(
-          margin: const EdgeInsets.all(8),
-          padding: const EdgeInsets.symmetric(horizontal: 8),
+          margin:
+              const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+          padding: const EdgeInsets.all(6),
           decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey.shade300),
+            border: Border.all(color: theme.dividerColor),
             borderRadius: BorderRadius.circular(12),
           ),
           child: DropdownButtonHideUnderline(
-            child: DropdownButton<String>(
+            child: DropdownButton2<String>(
               value: session.activeRole,
               isExpanded: true,
+              alignment: Alignment.centerLeft,
+              buttonStyleData: const ButtonStyleData(
+                padding: EdgeInsets.symmetric(horizontal: 8),
+                height: 48,
+              ),
+              dropdownStyleData: DropdownStyleData(
+                width:
+                    MediaQuery.of(context).size.width * 0.71,
+                maxHeight: 250,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  color: theme.colorScheme.surface,
+                ),
+              ),
               items: session.roles.map((role) {
                 return DropdownMenuItem(
                   value: role,
                   child: Row(
                     children: [
-                      Icon(_roleIcon(role), color: activeColor),
+                      Icon(
+                        _roleIcon(role),
+                        color: theme.colorScheme.primary,
+                      ),
                       const SizedBox(width: 8),
-                      Text(role.toUpperCase()),
+                      Text(
+                        role.toUpperCase(),
+                        style: TextStyle(
+                          color:
+                              theme.colorScheme.onSurface,
+                        ),
+                      ),
                     ],
                   ),
                 );
               }).toList(),
               onChanged: (role) async {
-                if (role == null || role == session.activeRole) return;
+                if (role == null ||
+                    role == session.activeRole) return;
 
-                final scaffoldMessenger = ScaffoldMessenger.of(context);
+                final scaffoldMessenger =
+                    ScaffoldMessenger.of(context);
 
                 showDialog(
                   context: context,
                   barrierDismissible: false,
-                  builder: (_) =>
-                      const Center(child: CircularProgressIndicator()),
+                  builder: (_) => const Center(
+                    child: CircularProgressIndicator(),
+                  ),
                 );
 
                 try {
@@ -120,23 +169,29 @@ class AppSidebar extends StatelessWidget {
 
                   if (!context.mounted) return;
 
-                  Navigator.pop(context); // close loading
-                  Navigator.pop(context); // close drawer
-
-                  scaffoldMessenger.showSnackBar(
-                    SnackBar(content: Text("Switched to $role")),
-                  );
-
-                  context.goNamed(SessionManager.homeRouteName);
-                } catch (e) {
-                  if (!context.mounted) return;
-
-                  Navigator.pop(context); // close loading
+                  Navigator.pop(context);
+                  Navigator.pop(context);
 
                   scaffoldMessenger.showSnackBar(
                     SnackBar(
                       content: Text(
-                        e.toString().replaceAll('Exception: ', ''),
+                          "Switched to $role"),
+                    ),
+                  );
+
+                  context.goNamed(
+                      SessionManager.homeRouteName);
+                } catch (e) {
+                  if (!context.mounted) return;
+
+                  Navigator.pop(context);
+
+                  scaffoldMessenger.showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        e.toString()
+                            .replaceAll(
+                                'Exception: ', ''),
                       ),
                     ),
                   );
@@ -158,21 +213,27 @@ class AppSidebar extends StatelessWidget {
         session?.normalizedRole == 'administrator' ||
             session?.normalizedRole == 'super_admin';
 
+    final theme = Theme.of(context);
+
     return Drawer(
+      backgroundColor: theme.colorScheme.surface,
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
           DrawerHeader(
-            decoration:
-                const BoxDecoration(color: Color.fromARGB(255, 163, 105, 240)),
+            decoration: BoxDecoration(
+              color: theme.colorScheme.primary,
+            ),
             child: Row(
               children: [
                 CircleAvatar(
                   radius: 28,
-                  backgroundColor: Colors.white,
+                  backgroundColor:
+                      theme.colorScheme.surface,
                   child: Icon(
                     _roleIcon(session?.activeRole),
-                    color: activeColor,
+                    color:
+                        theme.colorScheme.primary,
                     size: 40,
                   ),
                 ),
@@ -180,9 +241,10 @@ class AppSidebar extends StatelessWidget {
                 Expanded(
                   child: Text(
                     'Hi! ${session?.activeRole.toUpperCase() ?? 'GUEST'}',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
+                    style: theme.textTheme.titleMedium
+                        ?.copyWith(
+                      color:
+                          theme.colorScheme.onPrimary,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -191,15 +253,14 @@ class AppSidebar extends StatelessWidget {
             ),
           ),
 
-          /// ROLE SWITCH
           _switchRoleTile(context),
 
-          /// MAIN MENU
           _navTile(
             context: context,
             icon: Icons.home,
             title: 'Home',
-            routeName: SessionManager.homeRouteName,
+            routeName:
+                SessionManager.homeRouteName,
           ),
           _navTile(
             context: context,
@@ -226,10 +287,17 @@ class AppSidebar extends StatelessWidget {
             route: '/application/list',
           ),
 
-          /// LOGOUT
           ListTile(
-            leading: const Icon(Icons.logout),
-            title: const Text('Logout'),
+            leading: Icon(
+              Icons.logout,
+              color: theme.colorScheme.onSurface,
+            ),
+            title: Text(
+              'Logout',
+              style: TextStyle(
+                  color:
+                      theme.colorScheme.onSurface),
+            ),
             onTap: () async {
               await SecureStorage.clearAll();
               auth.logout();
@@ -238,25 +306,30 @@ class AppSidebar extends StatelessWidget {
 
               Navigator.pop(context);
 
-              ScaffoldMessenger.of(context).showSnackBar(
+              ScaffoldMessenger.of(context)
+                  .showSnackBar(
                 const SnackBar(
-                  content: Text('Logged out successfully'),
+                  content: Text(
+                      'Logged out successfully'),
                 ),
               );
             },
           ),
 
-          /// ADMIN SECTION
           if (canSeeAdmin) ...[
-            const Divider(),
-            const Padding(
-              padding: EdgeInsets.fromLTRB(16, 8, 16, 4),
+            Divider(color: theme.dividerColor),
+            Padding(
+              padding:
+                  const EdgeInsets.fromLTRB(
+                      16, 8, 16, 4),
               child: Text(
                 'ADMINISTRATION',
-                style: TextStyle(
-                  fontSize: 12,
+                style: theme.textTheme.labelSmall
+                    ?.copyWith(
+                  color: theme
+                      .colorScheme.onSurface
+                      .withOpacity(0.6),
                   fontWeight: FontWeight.bold,
-                  color: Colors.grey,
                   letterSpacing: 1,
                 ),
               ),

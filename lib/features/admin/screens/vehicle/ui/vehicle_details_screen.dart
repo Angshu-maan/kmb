@@ -17,6 +17,7 @@ class VehicleDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         title: const Text('Vehicle Details'),
         leading: const BackButton(),
@@ -44,7 +45,7 @@ class VehicleDetailsScreen extends StatelessWidget {
               width: double.infinity,
               decoration: BoxDecoration(
                 border: Border.all(
-                  color: Colors.grey.shade300,
+                   color: Theme.of(context).cardColor,
                   style: BorderStyle.solid,
                 ),
                 borderRadius: BorderRadius.circular(8),
