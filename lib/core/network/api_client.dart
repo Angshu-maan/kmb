@@ -11,7 +11,7 @@ class ApiService {
   static Future<Map<String, dynamic>> post(
     String endpoint,
     Map<String, dynamic> body, {
-     String? token ,
+    String? token,
   }) async {
     final url = "${ApiConfig.baseUrl}/$endpoint";
     debugPrint("API POST URL => $url");
@@ -24,14 +24,12 @@ class ApiService {
 
             headers: {
               "Content-Type": "application/json",
-               "Authorization": "Bearer $token",
+              "Authorization": "Bearer $token",
               // "X-Client-Type":"android"
             },
             body: jsonEncode(body),
           )
           .timeout(_timeout);
-
-
 
       return _handleResponse(response);
     } on TimeoutException {
@@ -40,10 +38,11 @@ class ApiService {
       throw Exception("Network error: $e");
     }
   }
+
   static Future<Map<String, dynamic>> roleSwitch(
     String endpoint,
     Map<String, dynamic> body, {
-    String? token ,
+    String? token,
   }) async {
     final url = "${ApiConfig.baseUrl}/$endpoint";
     debugPrint("API POST URL => $url");
@@ -57,13 +56,11 @@ class ApiService {
             headers: {
               "Content-Type": "application/json",
               if (token != null) "Authentication": "Bearer $token",
-              "X-Client-Type":"android"
+              "X-Client-Type": "android",
             },
             body: jsonEncode(body),
           )
           .timeout(_timeout);
-
-
 
       return _handleResponse(response);
     } on TimeoutException {
@@ -84,7 +81,7 @@ class ApiService {
       final response = await http
           .get(
             Uri.parse(url),
-            
+
             headers: {
               "Content-Type": "application/json",
               'X-Client-Type': 'android',
@@ -92,8 +89,8 @@ class ApiService {
             },
           )
           .timeout(_timeout);
-        
-        print('Get response ${response}');
+
+      print('Get response ${response}');
 
       return _handleResponse(response);
     } on TimeoutException {
@@ -103,74 +100,29 @@ class ApiService {
     }
   }
 
+  static Map<String, dynamic> _handleResponse(http.Response response) {
+    final statusCode = response.statusCode;
 
+    if (response.body.isEmpty) {
+      throw Exception("Empty server response");
+    }
 
+    final decoded = jsonDecode(response.body);
 
-static Map<String, dynamic> _handleResponse(http.Response response) {
-  final statusCode = response.statusCode;
+    if (statusCode >= 200 && statusCode < 300) {
+      return decoded;
+    }
 
-  if (response.body.isEmpty) {
-    throw Exception("Empty server response");
+    final message =
+        decoded['message'] ??
+        decoded['error'] ??
+        decoded['status'] ??
+        "Something went wrong";
+
+    throw Exception("Error $statusCode: $message");
   }
-
-  final decoded = jsonDecode(response.body);
-
-  if (statusCode >= 200 && statusCode < 300) {
-    return decoded;
-  }
-
-  final message =
-      decoded['message'] ??
-      decoded['error'] ??
-      decoded['status'] ??
-      "Something went wrong";
-
-  throw Exception("Error $statusCode: $message");
-}
-
 
   // static Map<String,dynamic> _refreshToken(){
 
   // }
-
-
-
-
-
-  
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

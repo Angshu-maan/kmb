@@ -43,9 +43,7 @@ class _OwnerScreenListState extends State<OwnerScreenList> {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Theme.of(context).colorScheme.surface,
-        title: SearchBox(
-          controller: SearchController(),
-        ),
+        title: SearchBox(controller: SearchController()),
       ),
 
       drawer: const AppSidebar(),
@@ -53,13 +51,10 @@ class _OwnerScreenListState extends State<OwnerScreenList> {
       body: FutureBuilder<List<OwnerModel>>(
         future: OwnerRepository().getOwners(),
         builder: (context, snapshot) {
-
           /// -------- LOADING --------
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
-              child: CircularProgressIndicator(
-                color: colors.primary,
-              ),
+              child: CircularProgressIndicator(color: colors.primary),
             );
           }
 
@@ -68,10 +63,7 @@ class _OwnerScreenListState extends State<OwnerScreenList> {
             return Center(
               child: Text(
                 'Something went wrong',
-                style: TextStyle(
-                  color: colors.error,
-                  fontSize: 16,
-                ),
+                style: TextStyle(color: colors.error, fontSize: 16),
               ),
             );
           }
@@ -83,7 +75,6 @@ class _OwnerScreenListState extends State<OwnerScreenList> {
             padding: const EdgeInsets.all(16),
             child: Column(
               children: [
-
                 /// -------- FILTER TOGGLE --------
                 StatusFilterToggle(
                   activeLabel: 'Active',
@@ -103,7 +94,7 @@ class _OwnerScreenListState extends State<OwnerScreenList> {
                           child: Text(
                             'No Owners found',
                             style: TextStyle(
-                              color: colors.onSurface.withOpacity(0.6),
+                              color: Theme.of(context).cardColor,
                               fontSize: 15,
                             ),
                           ),
@@ -118,7 +109,7 @@ class _OwnerScreenListState extends State<OwnerScreenList> {
                                       color: Colors.black.withOpacity(0.05),
                                       blurRadius: 10,
                                       offset: const Offset(0, 4),
-                                    )
+                                    ),
                                   ]
                                 : [],
                           ),

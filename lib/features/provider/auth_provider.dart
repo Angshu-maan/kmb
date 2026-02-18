@@ -23,8 +23,6 @@
 //   }
 // }
 
-
-
 // class AuthProvider with ChangeNotifier, WidgetsBindingObserver {
 //   bool _isLoggedIn = false;
 //   Session? _session;
@@ -101,7 +99,6 @@
 //     _autoLogoutTimer = null;
 //     notifyListeners();
 
-
 //     if (reason != null) {
 //       rootScaffoldMessengerKey.currentState?.showSnackBar(
 //         SnackBar(content: Text(reason), backgroundColor: Colors.black),
@@ -161,7 +158,6 @@
 // //   notifyListeners();
 // // }
 
-
 // //  Session? _session;
 
 // //   Session? get session => _session;
@@ -196,12 +192,7 @@
 //   }
 // }
 
-
 // }
-
-
-
-
 
 import 'dart:async';
 import 'package:flutter/material.dart';
@@ -237,7 +228,7 @@ class AuthProvider with ChangeNotifier, WidgetsBindingObserver {
   // GETTERS
   // ================================
 
-  bool get isLoggedIn => _session != null; // ✅ single source of truth
+  bool get isLoggedIn => _session != null;
   Session? get session => _session;
   UserRole? get role => _role;
 
@@ -322,10 +313,7 @@ class AuthProvider with ChangeNotifier, WidgetsBindingObserver {
 
     if (reason != null) {
       rootScaffoldMessengerKey.currentState?.showSnackBar(
-        SnackBar(
-          content: Text(reason),
-          backgroundColor: Colors.black,
-        ),
+        SnackBar(content: Text(reason), backgroundColor: Colors.black),
       );
     }
   }
@@ -379,7 +367,6 @@ class AuthProvider with ChangeNotifier, WidgetsBindingObserver {
     SessionManager.setSession(updatedSession);
     await SecureStorage.saveSession(updatedSession);
 
-    notifyListeners(); // 🔥 triggers GoRouter refresh safely
+    notifyListeners(); //  triggers GoRouter refresh safely
   }
 }
-

@@ -17,7 +17,8 @@ class SimpleTableShell extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).cardColor,
+
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
@@ -32,9 +33,9 @@ class SimpleTableShell extends StatelessWidget {
                       flex: c.flex,
                       child: Text(
                         c.label,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontWeight: FontWeight.w600,
-                          color: Colors.black87,
+                          color: Theme.of(context).colorScheme.onSurface,
                         ),
                       ),
                     ),

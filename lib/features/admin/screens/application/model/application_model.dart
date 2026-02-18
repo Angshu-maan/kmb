@@ -92,6 +92,11 @@ class ApplicationModel {
     );
   }
 
+
+
+
+  
+
   // static String _normalizeStatus(dynamic raw) {
   //   try {
   //     final status = raw?.toString().toLowerCase().trim() ?? '';
@@ -136,3 +141,5 @@ class ApplicationModel {
 //   if (value == null) return 0;
 //   return int.tryParse(value.toString()) ?? 0;
 // }
+
+

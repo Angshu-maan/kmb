@@ -48,7 +48,6 @@ class _SplashScreenState extends State<SplashScreen>
 
     await Future.delayed(const Duration(milliseconds: 600));
 
-    // Check network
     var connectivityResult = await Connectivity().checkConnectivity();
     if (connectivityResult == ConnectivityResult.none) {
       setState(() {
@@ -58,40 +57,28 @@ class _SplashScreenState extends State<SplashScreen>
       return;
     }
 
-    // Check login
     final isLoggedIn = await SecureStorage.isLoggedIn();
     await Future.delayed(const Duration(seconds: 1));
 
     if (!mounted) return;
-    if (!isLoggedIn) {
-      context.go('/login');
-      return;
-    }
-    final role = await SecureStorage.loadSession();
-    if (!mounted) return;
 
-    if (role == null) {
-      await SecureStorage.clearAll();
+    if (!isLoggedIn) {
       context.go('/login');
       return;
     }
 
     final session = await SecureStorage.loadSession();
 
-    if (session != null) {
-      final route = RoleRouter.homeRouteForRole(session.activeRole);
-      context.goNamed(route);
+    if (!mounted) return;
+
+    if (session == null) {
+      await SecureStorage.clearAll();
+      context.go('/login');
+      return;
     }
 
-    // setState(() {
-    //   _checking = false;
-    // });
-
-    // if (isLoggedIn) {
-    //   context.go('/admin_dashboard');
-    // } else {
-    //   context.go('/login');
-    // }
+    final route = RoleRouter.homeRouteForRole(session.activeRole);
+    context.goNamed(route);
   }
 
   @override
@@ -102,81 +89,107 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
-      // backgroundColor: const Color.fromARGB(255, 112, 140, 214),
-       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: SafeArea(
         child: Center(
           child: _checking
-              ? _buildSplashContent()
+              ? _buildSplashContent(theme)
               : _hasNetwork
-              ? _buildSplashContent()
-              : _buildNoNetwork(),
+              ? _buildSplashContent(theme)
+              : _buildNoNetwork(theme),
         ),
       ),
     );
   }
 
-  Widget _buildSplashContent() {
+  Widget _buildSplashContent(ThemeData theme) {
     return FadeTransition(
       opacity: _animation,
       child: Column(
-        mainAxisSize: MainAxisSize.min, // Center content vertically
+        mainAxisSize: MainAxisSize.min,
         children: [
           ScaleTransition(
             scale: _animation,
             child: Image.asset(
-              'assets/images/logo_black.png',
+              theme.brightness == Brightness.dark
+                  ? 'assets/images/logo_white.png'
+                  : 'assets/images/logo_black.png',
               width: 500,
               height: 300,
             ),
           ),
           const SizedBox(height: 16),
-          const Text(
+
+          Text(
             "KMB App",
-            style: TextStyle(
+            style: theme.textTheme.titleLarge?.copyWith(
               fontSize: 26,
               fontWeight: FontWeight.bold,
-              color: Colors.white,
+              color: theme.colorScheme.onBackground,
             ),
           ),
+
           const SizedBox(height: 20),
-          const CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+
+          CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation<Color>(
+              theme.colorScheme.primary,
+            ),
           ),
+
           const SizedBox(height: 20),
+
           Text(
             "Version: $_version",
-            style: const TextStyle(color: Colors.white70, fontSize: 14),
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.onBackground.withOpacity(0.7),
+            ),
           ),
+
           const SizedBox(height: 4),
-          const Text(
+
+          Text(
             "Powered by QWERTCORP",
-            style: TextStyle(color: Colors.white70, fontSize: 12),
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.onBackground.withOpacity(0.6),
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildNoNetwork() {
+  Widget _buildNoNetwork(ThemeData theme) {
     return Column(
-      mainAxisSize: MainAxisSize.min, // Center content vertically
+      mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Icon(Icons.signal_wifi_off, size: 60, color: Colors.red),
+        Icon(Icons.signal_wifi_off, size: 60, color: theme.colorScheme.error),
         const SizedBox(height: 16),
-        const Text(
+
+        Text(
           "No Internet Connection",
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          style: theme.textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.bold,
+            color: theme.colorScheme.onBackground,
+          ),
         ),
+
         const SizedBox(height: 8),
-        const Text(
+
+        Text(
           "Please check your network and try again.",
           textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 14),
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: theme.colorScheme.onBackground.withOpacity(0.7),
+          ),
         ),
+
         const SizedBox(height: 20),
+
         ElevatedButton(
           onPressed: () {
             setState(() {
