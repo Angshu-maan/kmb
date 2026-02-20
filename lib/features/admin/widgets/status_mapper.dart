@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'status_codes.dart';
-import 'status_ui.dart';
+import 'package:kmb_app/features/admin/widgets/status_codes.dart';
+import 'package:kmb_app/features/admin/widgets/status_ui.dart';
 
 StatusUi mapStatus({required int status, required StatusType type}) {
   switch (type) {
@@ -11,29 +11,35 @@ StatusUi mapStatus({required int status, required StatusType type}) {
 
     case StatusType.application:
       switch (status) {
+        case StatusCode.notCompleted:
+          return const StatusUi('Not Submitted', Colors.grey);
+
         case StatusCode.submitted:
           return const StatusUi('Submitted', Colors.grey);
-
-        case StatusCode.notSubmitted:
-          return const StatusUi('Not Submitted', Colors.grey);
 
         case StatusCode.dealingApproved:
           return const StatusUi('Dealing Approved', Colors.orange);
 
-        case StatusCode.dealingReject:
-          return const StatusUi('Dealing Rejected', Colors.orange);
+        case StatusCode.dealingRejected:
+          return const StatusUi('Dealing Rejected', Colors.red);
 
-        case StatusCode.eoApproved:
-          return const StatusUi('EO Approved', Colors.blue);
+        case StatusCode.executiveApproved:
+          return const StatusUi('Executive Approved', Colors.blue);
 
-        case StatusCode.eoReject:
-          return const StatusUi('EO Rejected', Colors.blue);
+        case StatusCode.executiveRejected:
+          return const StatusUi('Executive Rejected', Colors.red);
 
         case StatusCode.chairmanApproved:
           return const StatusUi('Chairman Approved', Colors.green);
 
         case StatusCode.chairmanRejected:
           return const StatusUi('Chairman Rejected', Colors.red);
+
+        case StatusCode.sentToDealingForIssue:
+          return const StatusUi('Sent to Dealing for Issue', Colors.purple);
+
+        case StatusCode.permitIssued:
+          return const StatusUi('Permit Issued', Colors.green);
 
         default:
           return const StatusUi('Unknown', Colors.grey);
@@ -46,31 +52,31 @@ mapStatusString(String? status) {
     case 'submitted':
       return StatusCode.submitted;
 
-    case 'dealing appro':
-    case 'dealing approved':
+    case 'dealing_approved':
       return StatusCode.dealingApproved;
 
-    case 'dealing reject':
-    case 'dealing rejected':
-      return StatusCode.dealingReject;
+    case 'dealing_rejected':
+      return StatusCode.dealingRejected;
 
-    case 'eo appro':
-    case 'eo approved':
-      return StatusCode.eoApproved;
+    case 'eo_approved':
+      return StatusCode.executiveApproved;
 
-    case 'eo reject':
-    case 'eo rejected':
-      return StatusCode.eoReject;
+    case 'eo_rejected':
+      return StatusCode.executiveRejected;
 
-    case 'chairman appro':
-    case 'chairman approved':
+    case 'chairman_approved':
       return StatusCode.chairmanApproved;
 
-    case 'chairman reject':
-    case 'chairman rejected':
+    case 'chairman_rejected':
       return StatusCode.chairmanRejected;
 
+    case 'sent_to_dealing_for_issue':
+      return StatusCode.sentToDealingForIssue;
+
+    case 'permit_issued':
+      return StatusCode.permitIssued;
+
     default:
-      return StatusCode.submitted;
+      return StatusCode.notCompleted;
   }
 }

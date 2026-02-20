@@ -27,10 +27,12 @@ class SimpleTableShell extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(16),
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: columns
                   .map(
                     (c) => Expanded(
-                      flex: c.flex,
+                      flex: 0,
                       child: Text(
                         c.label,
                         style: TextStyle(
@@ -71,7 +73,6 @@ class _EmptyTableRow extends StatelessWidget {
       child: Row(
         children: [
           Expanded(
-            flex: totalFlex,
             child: Text(
               'No data found',
               textAlign: TextAlign.center,
@@ -88,5 +89,5 @@ class TableColumn {
   final String label;
   final int flex;
 
-  const TableColumn(this.label, {this.flex = 1});
+  const TableColumn(this.label, {this.flex = 0});
 }

@@ -34,7 +34,6 @@ class _DriverScreenListState extends State<DriverScreenList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         title: SearchBox(
           controller: SearchController(),
@@ -67,12 +66,19 @@ class _DriverScreenListState extends State<DriverScreenList> {
             padding: const EdgeInsets.all(16),
             child: Column(
               children: [
-                StatusFilterToggle(
-                  activeLabel: 'Active',
-                  inactiveLabel: 'Inactive',
+                StatusFilterToggle<StatusFilter>(
                   selected: _filter,
+                  values: StatusFilter.values,
                   onChanged: (value) {
                     setState(() => _filter = value);
+                  },
+                  labelBuilder: (value) {
+                    switch (value) {
+                      case StatusFilter.active:
+                        return 'Active';
+                      case StatusFilter.inactive:
+                        return 'Inactive';
+                    }
                   },
                 ),
 

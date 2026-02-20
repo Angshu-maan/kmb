@@ -201,6 +201,7 @@ import 'package:kmb_app/core/global/globals.dart';
 import 'package:kmb_app/features/auth/models/session.dart';
 import 'package:kmb_app/core/auth/user_role.dart';
 import 'package:kmb_app/core/storage/secure_storage.dart';
+import 'package:kmb_app/features/auth/models/user_model.dart';
 import 'package:kmb_app/features/auth/services/auth_service.dart';
 
 UserRole mapRole(String role) {
@@ -211,7 +212,7 @@ UserRole mapRole(String role) {
       return UserRole.chairman;
     case 'executive officer':
       return UserRole.executive;
-    case 'dealings':
+    case 'dealing':
       return UserRole.dealing;
     default:
       throw Exception('Unknown role: $role');
@@ -221,6 +222,9 @@ UserRole mapRole(String role) {
 class AuthProvider with ChangeNotifier, WidgetsBindingObserver {
   Session? _session;
   UserRole? _role;
+  UserModel? _user;
+
+  UserModel? get user => _user;
 
   Timer? _autoLogoutTimer;
 

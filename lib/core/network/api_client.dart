@@ -73,6 +73,7 @@ class ApiService {
   static Future<Map<String, dynamic>> get(
     String endpoint, {
     String? token,
+    required Map<String, int> queryParameters,
   }) async {
     final url = "${ApiConfig.baseUrl}/$endpoint";
     debugPrint("API GET URL => $url");
@@ -121,8 +122,4 @@ class ApiService {
 
     throw Exception("Error $statusCode: $message");
   }
-
-  // static Map<String,dynamic> _refreshToken(){
-
-  // }
 }

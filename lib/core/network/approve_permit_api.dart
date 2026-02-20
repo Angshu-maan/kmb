@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 import '../../config/api_config.dart';
@@ -8,36 +7,76 @@ import '../../config/api_config.dart';
 class PermitService {
   static const _timeout = Duration(seconds: 15);
 
-  static Future<Map<String, dynamic>> approvePermit({
+  static Future<Map<String, dynamic>> approveNreject({
     required int applicationRef,
-    required String permitNumber,
-    required String expiryDate,
+    String? summary,
     required String token,
   }) async {
-    const endpoint = "approve";
-    final url = "${ApiConfig.baseUrl}/$endpoint";
+    final url = "${ApiConfig.baseUrl}/${ApiConfig.approve}";
 
     final body = {
       "application_ref": applicationRef,
-      "permit_number": permitNumber,
-      "permit_expiry_date": expiryDate,
+      if (summary != null) "summary": summary,
     };
 
-    debugPrint("API POST URL => $url");
-    debugPrint("API POST BODY => ${jsonEncode(body)}");
+    try {
+      final response = await http
+          .post(
+            Uri.parse(url),
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": "Bearer $token",
+            },
+            body: jsonEncode(body),
+          )
+          .timeout(_timeout);
 
-    final response = await http
-        .post(
-          Uri.parse(url),
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer $token",
-          },
-          body: jsonEncode(body),
-        )
-        .timeout(_timeout);
+      return _handleJsonResponse(response);
+    } on TimeoutException {
+      throw Exception("Request timeout. Please try again.");
+    } on http.ClientException {
+      throw Exception("Network error. Check your connection.");
+    } catch (e) {
+      throw Exception("Unexpected error: $e");
+    }
+  }
 
-    return _handleJsonResponse(response);
+  static Future<Map<String, dynamic>> permitIssuednReject({
+    required int applicationRef,
+    required String permitNo,
+    required int userRef,
+    required String permitExpiryDate,
+    required String token,
+  }) async {
+    final url = "${ApiConfig.baseUrl}/${ApiConfig.permitIssue}";
+
+    final body = {
+      "application_id": applicationRef,
+      "user_ref": userRef,
+      "permit_no": permitNo,
+      "permit_expiry_date": permitExpiryDate,
+    };
+
+    try {
+      final response = await http
+          .post(
+            Uri.parse(url),
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": "Bearer $token",
+            },
+            body: jsonEncode(body),
+          )
+          .timeout(_timeout);
+
+      return _handleJsonResponse(response);
+    } on TimeoutException {
+      throw Exception("Request timeout. Please try again.");
+    } on http.ClientException {
+      throw Exception("Network error. Check your connection.");
+    } catch (e) {
+      throw Exception("Unexpected error: $e");
+    }
   }
 
   static Map<String, dynamic> _handleJsonResponse(http.Response response) {

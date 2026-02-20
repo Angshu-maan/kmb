@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kmb_app/features/admin/widgets/status_codes.dart';
 import 'package:kmb_app/features/admin/widgets/status_mapper.dart';
+import 'package:kmb_app/features/admin/widgets/status_ui.dart';
 import '../model/application_model.dart';
-import '../../../widgets/status_badge.dart';
 
 class ApplicationRow extends StatelessWidget {
   final ApplicationModel kmbApplication;
@@ -12,69 +12,137 @@ class ApplicationRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final statusUi = mapStatus(
-      status: kmbApplication.status,
-      type: StatusType.application,
-    );
+    final statusUi = _resolveStatusUi();
+    final theme = Theme.of(context);
+
     return Padding(
-      padding: const EdgeInsets.all(12),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          _Cell(kmbApplication.applicationNo, flex: 2),
-
-          Expanded(
-            flex: 2,
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: StatusBadge(
-                label: statusUi.label,
-                color: statusUi.color,
-                display: StatusDisplay.textOnly,
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        decoration: BoxDecoration(
+          color: theme.cardColor,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            /// Application Number + Status (Left Side)
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    kmbApplication.applicationNo,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  RichText(
+                    text: TextSpan(
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.w500,
+                      ),
+                      children: [
+                        TextSpan(
+                          text: "Status: ",
+                          style: TextStyle(
+                            color: Colors.grey.shade600, // Always grey
+                          ),
+                        ),
+                        TextSpan(
+                          text: statusUi.label,
+                          style: TextStyle(
+                            color: statusUi.color, // Your dynamic color logic
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
-          ),
 
-          Expanded(
-            flex: 2,
-            child: Align(
-              alignment: Alignment.centerRight,
-              child: IconButton(
-                icon: const Icon(Icons.visibility),
-                tooltip: 'View Application',
-                onPressed: () {
-                  context.pushNamed(
-                    'application_details',
-                    extra: kmbApplication,
-                  );
-                },
+            /// View Button (Right Side)
+            ElevatedButton(
+              onPressed: () => _navigateToDetails(context),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF6A5ACD), // purple
+                foregroundColor: Colors.white,
+                elevation: 0,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 10,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
+              child: const Text("View"),
             ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _Cell extends StatelessWidget {
-  final String text;
-  final int flex;
-
-  const _Cell(this.text, {this.flex = 2});
-
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      flex: flex,
-      child: Center(
-        child: Text(
-          text,
-          overflow: TextOverflow.ellipsis,
-          maxLines: 1,
-          style: const TextStyle(fontSize: 14),
+          ],
         ),
       ),
     );
+  }
+
+  StatusUi _resolveStatusUi() {
+    final currentStatus = kmbApplication.currentStatus;
+
+    StatusUi statusUi;
+
+    if (kmbApplication.permitIssued == 1) {
+      statusUi = mapStatus(
+        status: StatusCode.permitIssued,
+        type: StatusType.application,
+      );
+    } else {
+      statusUi = mapStatus(status: currentStatus, type: StatusType.application);
+    }
+
+    /// Override ONLY these two statuses
+    if (currentStatus == StatusCode.submitted) {
+      return StatusUi(
+        statusUi.label,
+        Colors.green, // Submitted color
+      );
+    }
+
+    if (currentStatus == StatusCode.dealingApproved) {
+      return StatusUi(
+        statusUi.label,
+        Colors.blue.shade700, // Dealing Approved color
+      );
+    }
+    if (currentStatus == StatusCode.executiveApproved) {
+      return StatusUi(
+        statusUi.label,
+        Colors.yellow, // Dealing Approved color
+      );
+    }
+    if (currentStatus == StatusCode.chairmanApproved) {
+      return StatusUi(
+        statusUi.label,
+        const Color.fromARGB(255, 240, 54, 247), // Dealing Approved color
+      );
+    }
+    if (currentStatus == StatusCode.sentToDealingForIssue) {
+      return StatusUi(
+        statusUi.label,
+        Colors.blueGrey, // Dealing Approved color
+      );
+    }
+
+    return statusUi;
+  }
+
+  void _navigateToDetails(BuildContext context) {
+    context.pushNamed('application_details', extra: kmbApplication);
   }
 }

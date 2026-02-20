@@ -429,7 +429,7 @@ class AppSidebar extends StatelessWidget {
       case 'dealings':
         return 'assets/roles/dealing.png';
       default:
-        return 'assets/roles/user.png';
+        return 'assets/roles/dealing.png';
     }
   }
 

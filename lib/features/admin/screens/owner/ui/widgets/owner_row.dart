@@ -3,7 +3,6 @@ import 'package:go_router/go_router.dart';
 import 'package:kmb_app/features/admin/widgets/status_codes.dart';
 import 'package:kmb_app/features/admin/widgets/status_mapper.dart';
 import '../../model/owner_model.dart';
-import '../../../../widgets/status_badge.dart';
 
 class OwnerRow extends StatelessWidget {
   final OwnerModel owner;
@@ -13,75 +12,88 @@ class OwnerRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final colors = theme.colorScheme;
+
+    final bool isInactive = owner.active == StatusCode.inactive;
 
     final statusUi = mapStatus(
       status: owner.active,
       type: StatusType.activeInactive,
     );
 
+    final String displayName = isInactive ? "Not available" : owner.ownerName;
+
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      color: Colors.transparent, // important for theme
-      child: Row(
-        children: [
-          /// ================= NAME =================
-          Expanded(flex: 2, child: _Cell(owner.ownerName)),
-
-          /// ================= PHONE =================
-          Expanded(flex: 2, child: _Cell(owner.ownerPhone)),
-
-          /// ================= STATUS =================
-          Expanded(
-            child: Center(
-              child: StatusBadge(
-                label: statusUi.label,
-                color: statusUi.color,
-                display: StatusDisplay.dotOnly,
-              ),
-            ),
-          ),
-
-          /// ================= ACTION =================
-          Expanded(
-            child: Align(
-              alignment: Alignment.centerRight,
-              child: IconButton(
-                icon: Icon(
-                  Icons.visibility,
-                  color: colors.onSurface, 
-                ),
-                tooltip: 'View Owner',
-                onPressed: () {
-                  context.pushNamed('owner_details', extra: owner);
-                },
-              ),
-            ),
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: theme.cardColor,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
-    );
-  }
-}
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          /// LEFT SIDE
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  displayName,
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: isInactive ? Colors.grey : null,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
 
-/// ===============================
-/// THEME SAFE TABLE CELL
-/// ===============================
-class _Cell extends StatelessWidget {
-  final String text;
+                const SizedBox(height: 6),
 
-  const _Cell(this.text);
+                RichText(
+                  text: TextSpan(
+                    style: theme.textTheme.bodyMedium,
+                    children: [
+                      const TextSpan(
+                        text: "Status: ",
+                        style: TextStyle(fontWeight: FontWeight.w500),
+                      ),
+                      TextSpan(
+                        text: statusUi.label,
+                        style: TextStyle(
+                          color: statusUi.color,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
 
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      text,
-      overflow: TextOverflow.ellipsis,
-      maxLines: 1,
-      style: Theme.of(context)
-          .textTheme
-          .bodyMedium
-          ?.copyWith(fontSize: 14),
+          const SizedBox(width: 12),
+
+          /// RIGHT SIDE
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.deepPurple,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+            onPressed: () {
+              context.pushNamed('owner_details', extra: owner);
+            },
+            child: const Text("View", style: TextStyle(color: Colors.white)),
+          ),
+        ],
+      ),
     );
   }
 }
